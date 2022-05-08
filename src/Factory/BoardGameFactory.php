@@ -40,11 +40,12 @@ final class BoardGameFactory extends ModelFactory
         return [
             // TODO add your default values here (https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories)
             'name' => self::faker()->word(),
+            'description' => self::faker()->text(),
             'nbMinPlayer' => self::faker()->randomNumber(),
             'nbMaxPlayer' => self::faker()->randomNumber(),
             'gameTime' => self::faker()->randomNumber(),
             'ageMin' => self::faker()->randomNumber(),
-            'target' => self::faker()->text(),
+            'target' => self::faker()->word(1),
             'price' => self::faker()->randomFloat(),
             'dateAdd' => new \DateTime(), // TODO add DATETIME ORM type manually
             'dateUpdate' => new \DateTime(), // TODO add DATETIME ORM type manually

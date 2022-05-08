@@ -1,0 +1,70 @@
+body{
+    background-color: #e7e7e7;
+}
+
+@font-face {
+    font-family: "Folkard";
+    src: url("../font/folkard_.ttf") format("truetype");
+}
+
+header{
+    padding: 10px;
+    background-color: #e60012;
+}
+
+header a {
+    font-family: "Folkard";
+    text-align: center;
+    padding: 12px;
+    font-size: 45px;
+    line-height: 25px;
+    color: #ffffff;
+}
+
+header a:hover{
+    color: #ffffff;
+}
+
+header a:active{
+    color: #ffffff;
+}
+
+a{
+    text-decoration: none;
+    color: black;
+}
+
+a:hover{
+    color: black;
+}
+
+a:active{
+    color: black;
+}
+
+.board_game{
+    margin: 5px;
+    min-height: 300px;
+    box-shadow: 0 1px 4px rgb(0 0 0 / 10%);
+    border: 3px solid #bf0010;
+    border-radius: 5px;
+    background-color: #ffffff;
+    width: 100%;
+    position: relative;
+}
+
+.board_game .title_board_game{
+    font-family: "Folkard";
+    padding: 8px;
+    text-align: center;
+    font-size: 18px;
+    min-height: 55px;
+    text-transform: uppercase;
+    font-weight: 700;
+    background-color: #e60012;
+    color: #ffffff;
+    vertical-align: middle;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

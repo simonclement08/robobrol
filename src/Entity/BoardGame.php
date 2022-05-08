@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\BoardGameRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -21,41 +22,57 @@ class BoardGame
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank
+     * @Assert\Length(
+     *     max = 255
+     * )
      */
     private $name;
 
     /**
      * @ORM\Column(type="text", nullable=true)
+     * @Assert\NotBlank
      */
     private $description;
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\NotBlank
+     * @Assert\Range(min = 0)
      */
     private $nbMinPlayer;
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\NotBlank
+     * @Assert\Range(min = 1)
      */
     private $nbMaxPlayer;
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\NotBlank
+     * @Assert\Range(min = 5)
      */
     private $gameTime;
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\NotBlank
+     * @Assert\Range(min = 0)
      */
     private $ageMin;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank
      */
     private $target;
 
     /**
      * @ORM\Column(type="float")
+     * @Assert\NotBlank
+     * @Assert\Range(min = 0)
      */
     private $price;
 
@@ -111,6 +128,8 @@ class BoardGame
 
     public function __construct()
     {
+        $this->dateAdd = new \DateTime();
+        $this->dateUpdate = new \DateTime();
         $this->images = new ArrayCollection();
         $this->boardGameMarkets = new ArrayCollection();
         $this->videos = new ArrayCollection();
