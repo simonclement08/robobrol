@@ -10,9 +10,10 @@ body{
 header{
     padding: 10px;
     background-color: #e60012;
+    color: #ffffff;
 }
 
-header a {
+#title {
     font-family: "Folkard";
     text-align: center;
     padding: 12px;
@@ -21,11 +22,7 @@ header a {
     color: #ffffff;
 }
 
-header a:hover{
-    color: #ffffff;
-}
-
-header a:active{
+header > a, header > a:hover, header > a:active, .white, .white:hover, .white:active{
     color: #ffffff;
 }
 

@@ -9,6 +9,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
  * @Route("/range")
@@ -17,6 +19,7 @@ class RangeController extends AbstractController
 {
     /**
      * @Route("/", name="app_range_index", methods={"GET"})
+     * @IsGranted("ROLE_ADMIN")
      */
     public function index(RangeRepository $rangeRepository): Response
     {
@@ -27,6 +30,7 @@ class RangeController extends AbstractController
 
     /**
      * @Route("/new", name="app_range_new", methods={"GET", "POST"})
+     * @IsGranted("ROLE_SUPER_ADMIN")
      */
     public function new(Request $request, RangeRepository $rangeRepository): Response
     {
@@ -47,6 +51,7 @@ class RangeController extends AbstractController
 
     /**
      * @Route("/{id}", name="app_range_show", methods={"GET"})
+     * @IsGranted("ROLE_ADMIN")
      */
     public function show(Range $range): Response
     {
@@ -57,6 +62,7 @@ class RangeController extends AbstractController
 
     /**
      * @Route("/{id}/edit", name="app_range_edit", methods={"GET", "POST"})
+     * @IsGranted("ROLE_SUPER_ADMIN")
      */
     public function edit(Request $request, Range $range, RangeRepository $rangeRepository): Response
     {
@@ -76,6 +82,7 @@ class RangeController extends AbstractController
 
     /**
      * @Route("/{id}", name="app_range_delete", methods={"POST"})
+     * @IsGranted("ROLE_SUPER_ADMIN")
      */
     public function delete(Request $request, Range $range, RangeRepository $rangeRepository): Response
     {

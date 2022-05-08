@@ -9,7 +9,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 class BoardGameController extends AbstractController
 {
@@ -25,6 +26,7 @@ class BoardGameController extends AbstractController
 
     /**
      * @Route("/board_game/new", name="board_game_new", methods={"GET", "POST"})
+     * @IsGranted("ROLE_ADMIN")
      */
     public function new(Request $request, BoardGameRepository $boardGameRepository): Response
     {
@@ -55,6 +57,7 @@ class BoardGameController extends AbstractController
 
     /**
      * @Route("/board_game/{id}/edit", name="board_game_edit", methods={"GET", "POST"})
+     * @IsGranted("ROLE_ADMIN")
      */
     public function edit(Request $request, BoardGame $boardGame, BoardGameRepository $boardGameRepository): Response
     {
@@ -74,6 +77,7 @@ class BoardGameController extends AbstractController
 
     /**
      * @Route("/board_game/{id}", name="board_game_delete", methods={"POST"})
+     * @IsGranted("ROLE_ADMIN")
      */
     public function delete(Request $request, BoardGame $boardGame, BoardGameRepository $boardGameRepository): Response
     {

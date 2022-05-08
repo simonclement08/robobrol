@@ -16,13 +16,28 @@
     </head>
     <body>
         <header>
-            <div class="container">
-                <div class="row mb-2">
-                    <div class="col-12 text-center pt-3">
-                        <a href="{{ path('home') }}">Robobrol</a>
-                    </div>
+            <nav class="navbar navbar-expand-lg">
+                <div class="container-fluid">
+                    <a id="title" class="navbar-brand" href="{{ path('home') }}">Robobrol</a>
+                    <ul class="navbar-nav me-auto">
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <li class="nav-item dropdown">
+                                <a class="white dropdown-toggle navbar-brand nav-link" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Ajouter
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <a href="{{ path('board_game_new') }}" class="white dropdown-item">Ajouter un jeu</a>
+                                </div>
+                            </li>
+                        {% endif %}
+                    </ul>
+                    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                        {{ app.user.username }} | <a class="white nav-link" href="{{ path('app_logout') }}">Déconnexion</a>
+                    {% else %}
+                        <a class="white nav-link" href="{{ path('app_login') }}">Connexion</a> | <a class="white nav-link" href="{{ path('app_register') }}">Inscription</a>
+                    {% endif %}
                 </div>
-            </div>
+            </nav>
         </header>
         <div class="container-fluid pb-3">
             {% block body %}{% endblock %}
