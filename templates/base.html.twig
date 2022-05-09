@@ -40,7 +40,11 @@
             </nav>
         </header>
         <div class="container-fluid pb-3">
-            {% block body %}{% endblock %}
+            <div class="row justify-content-center">
+                <div class="col-sm-12 col-md-10">
+                    {% block body %}{% endblock %}
+                </div>
+            </div>
         </div>
     </body>
 </html>

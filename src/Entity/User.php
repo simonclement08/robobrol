@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -48,9 +50,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $dateBirth;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\OneToMany(targetEntity=BoardGameWish::class, mappedBy="user", orphanRemoval=true)
      */
-    private $isVerified = false;
+    private $boardGameWishes;
+
+    /**
+     * @ORM\OneToMany(targetEntity=BoardGameOwned::class, mappedBy="user", orphanRemoval=true)
+     */
+    private $boardGameOwneds;
+
+    /**
+     * @ORM\OneToMany(targetEntity=BoardGameNote::class, mappedBy="user", orphanRemoval=true)
+     */
+    private $boardGameNotes;
+
+    public function __construct()
+    {
+        $this->boardGameWishes = new ArrayCollection();
+        $this->boardGameOwneds = new ArrayCollection();
+        $this->boardGameNotes = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -160,14 +179,92 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function isVerified(): bool
+    /**
+     * @return Collection<int, BoardGameWish>
+     */
+    public function getBoardGameWishes(): Collection
     {
-        return $this->isVerified;
+        return $this->boardGameWishes;
     }
 
-    public function setIsVerified(bool $isVerified): self
+    public function addBoardGameWish(BoardGameWish $boardGameWish): self
     {
-        $this->isVerified = $isVerified;
+        if (!$this->boardGameWishes->contains($boardGameWish)) {
+            $this->boardGameWishes[] = $boardGameWish;
+            $boardGameWish->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBoardGameWish(BoardGameWish $boardGameWish): self
+    {
+        if ($this->boardGameWishes->removeElement($boardGameWish)) {
+            // set the owning side to null (unless already changed)
+            if ($boardGameWish->getUser() === $this) {
+                $boardGameWish->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, BoardGameOwned>
+     */
+    public function getBoardGameOwneds(): Collection
+    {
+        return $this->boardGameOwneds;
+    }
+
+    public function addBoardGameOwned(BoardGameOwned $boardGameOwned): self
+    {
+        if (!$this->boardGameOwneds->contains($boardGameOwned)) {
+            $this->boardGameOwneds[] = $boardGameOwned;
+            $boardGameOwned->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBoardGameOwned(BoardGameOwned $boardGameOwned): self
+    {
+        if ($this->boardGameOwneds->removeElement($boardGameOwned)) {
+            // set the owning side to null (unless already changed)
+            if ($boardGameOwned->getUser() === $this) {
+                $boardGameOwned->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, BoardGameNote>
+     */
+    public function getBoardGameNotes(): Collection
+    {
+        return $this->boardGameNotes;
+    }
+
+    public function addBoardGameNote(BoardGameNote $boardGameNote): self
+    {
+        if (!$this->boardGameNotes->contains($boardGameNote)) {
+            $this->boardGameNotes[] = $boardGameNote;
+            $boardGameNote->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBoardGameNote(BoardGameNote $boardGameNote): self
+    {
+        if ($this->boardGameNotes->removeElement($boardGameNote)) {
+            // set the owning side to null (unless already changed)
+            if ($boardGameNote->getUser() === $this) {
+                $boardGameNote->setUser(null);
+            }
+        }
 
         return $this;
     }

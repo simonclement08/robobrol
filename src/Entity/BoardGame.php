@@ -126,6 +126,11 @@ class BoardGame
      */
     private $boardGameTypes;
 
+    /**
+     * @ORM\OneToMany(targetEntity=BoardGameNote::class, mappedBy="boardGame", orphanRemoval=true)
+     */
+    private $boardGameNotes;
+
     public function __construct()
     {
         $this->dateAdd = new \DateTime();
@@ -136,6 +141,7 @@ class BoardGame
         $this->expansions = new ArrayCollection();
         $this->boardGameThemes = new ArrayCollection();
         $this->boardGameTypes = new ArrayCollection();
+        $this->boardGameNotes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -466,6 +472,36 @@ class BoardGame
             // set the owning side to null (unless already changed)
             if ($boardGameType->getBoardGame() === $this) {
                 $boardGameType->setBoardGame(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, BoardGameNote>
+     */
+    public function getBoardGameNotes(): Collection
+    {
+        return $this->boardGameNotes;
+    }
+
+    public function addBoardGameNote(BoardGameNote $boardGameNote): self
+    {
+        if (!$this->boardGameNotes->contains($boardGameNote)) {
+            $this->boardGameNotes[] = $boardGameNote;
+            $boardGameNote->setBoardGame($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBoardGameNote(BoardGameNote $boardGameNote): self
+    {
+        if ($this->boardGameNotes->removeElement($boardGameNote)) {
+            // set the owning side to null (unless already changed)
+            if ($boardGameNote->getBoardGame() === $this) {
+                $boardGameNote->setBoardGame(null);
             }
         }
 
