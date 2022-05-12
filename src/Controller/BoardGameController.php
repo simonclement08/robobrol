@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\BoardGame;
 use App\Form\BoardGameType;
 use App\Repository\BoardGameRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,6 +21,9 @@ class BoardGameController extends AbstractController
      */
     public function index(BoardGameRepository $boardGameRepository): Response
     {
+        foreach ($boardGameRepository->findAll() as $key => $board) {
+            $board->getImages()->initialize();
+        }
         return $this->render('board_game/index.html.twig', [
             'board_games' => $boardGameRepository->findAll(),
         ]);
@@ -35,8 +40,9 @@ class BoardGameController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
             $boardGameRepository->add($boardGame);
-            return $this->redirectToRoute('board_game_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('home', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('board_game/new.html.twig', [
@@ -59,12 +65,25 @@ class BoardGameController extends AbstractController
      * @Route("/board_game/{id}/edit", name="board_game_edit", methods={"GET", "POST"})
      * @IsGranted("ROLE_ADMIN")
      */
-    public function edit(Request $request, BoardGame $boardGame, BoardGameRepository $boardGameRepository): Response
+    public function edit(Request $request, BoardGame $boardGame, BoardGameRepository $boardGameRepository, EntityManagerInterface $entityManager): Response
     {
+        dump($boardGame->getImages()->getValues());
         $form = $this->createForm(BoardGameType::class, $boardGame);
         $form->handleRequest($request);
 
+        $originalImages = new ArrayCollection();
+
+        foreach ($boardGame->getImages() as $image) {
+            $originalImages->add($image);
+        }
+
         if ($form->isSubmitted() && $form->isValid()) {
+            foreach ($originalImages as $image) {
+                if (false === $boardGame->getImages()->contains($image)) {
+                    $entityManager->remove($image);
+                }
+            }
+
             $boardGameRepository->add($boardGame);
             return $this->redirectToRoute('home', [], Response::HTTP_SEE_OTHER);
         }
@@ -85,6 +104,6 @@ class BoardGameController extends AbstractController
             $boardGameRepository->remove($boardGame);
         }
 
-        return $this->redirectToRoute('board_game_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('home', [], Response::HTTP_SEE_OTHER);
     }
 }

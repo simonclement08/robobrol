@@ -4,27 +4,40 @@
 
 {% block body %}
     <div class="board_game">
+        <a class="float-end" href="{{ path('board_game_edit', {'id': board_game.id}) }}">edit</a>
+        {{ include('board_game/_delete_form.html.twig') }}
+
         <div class="row justify-content-center">
-            <div class="col-4">
+            <div class="col-sm-12 col-md-12 col-lg-5">
+                <a href="{{ vich_uploader_asset(board_game.images.0)}}">
+                    <img src="{{ vich_uploader_asset(board_game.images.0)| imagine_filter('show_board_game') }}" alt="{{ board_game.name }}">
+                </a>
             </div>
-            <div class="col-8">
+            <div class="col-sm-12 col-md-12 col-lg-7">
                 <h1>{{ board_game.name }}</h1>
                 <p>{{ board_game.target }}</p>
                 <p>{{ board_game.ageMin }}</p>
                 <p>{{ board_game.nbMinPlayer is same as board_game.nbMaxPlayer ? board_game.nbMaxPlayer ~ " joueurs" : "De " ~ board_game.nbMinPlayer ~ " à " ~ board_game.nbMaxPlayer ~ " joueurs" }}</p>
                 <p>{{ board_game.gameTime }} minutes</p>
                 <p>{{ board_game.price }}€</p>
+                <div class="list_image row">
+                    {% for image in board_game.images %}
+                        {% if image.position is not same as 1 %}
+                            <div class="list_image item col-auto">
+                                <a href="{{ vich_uploader_asset(image)}}">
+                                    <img src="{{ vich_uploader_asset(image)| imagine_filter('mini_board_game') }}" alt="{{ board_game.name }}">
+                                </a>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
             </div>
         </div>
         <div class="row">
-            <div class="col-8">
-                {{ board_game.description }}
+            <div class="col-sm-12 col-md-12 col-lg-8">
+                {{ board_game.description|raw }}
             </div>
         </div>
     </div>
-    <a href="{{ path('home') }}">back to list</a>
 
-    <a href="{{ path('board_game_edit', {'id': board_game.id}) }}">edit</a>
-
-    {{ include('board_game/_delete_form.html.twig') }}
 {% endblock %}

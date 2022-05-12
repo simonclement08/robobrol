@@ -92,7 +92,8 @@ class BoardGame
     private $dateUpdate;
 
     /**
-     * @ORM\OneToMany(targetEntity=Image::class, mappedBy="boardGame", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Image::class, mappedBy="boardGame", orphanRemoval=true, cascade={"persist"})
+     * @ORM\OrderBy({"position" = "ASC"})
      */
     private $images;
 

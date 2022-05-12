@@ -41,6 +41,7 @@ a:active{
 
 .board_game{
     margin: 5px;
+    padding: 10px;
     min-height: 300px;
     box-shadow: 0 1px 4px rgb(0 0 0 / 10%);
     border: 3px solid #bf0010;
@@ -64,4 +65,12 @@ a:active{
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.list_image.item {
+    display: inline-block;
+}
+
+.list_image{
+    float: left;
 }

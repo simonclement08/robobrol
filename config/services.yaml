@@ -22,3 +22,18 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+liip_imagine :
+    filter_sets :
+        list_board_game :
+            quality : 100
+            filters :
+                thumbnail  : { size : [131, 131], mode : outbound }
+        show_board_game:
+            quality: 100
+            filters:
+                thumbnail: { size: [ 350, 350 ], mode: outbound }
+        mini_board_game:
+            quality: 100
+            filters:
+                thumbnail: { size: [ 65, 65 ], mode: outbound }

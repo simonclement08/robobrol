@@ -1,0 +1,8 @@
+vich_uploader:
+    db_driver: orm
+
+    mappings:
+        board_game_image:
+            uri_prefix: /images/board_game
+            upload_destination: '%kernel.project_dir%/public/images/board_game'
+            delete_on_remove: true

@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\BoardGame;
 use App\Entity\Range;
+use App\Form\ImageFormType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -12,8 +13,10 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Form\Type\VichImageType;
 
 
 class BoardGameType extends AbstractType
@@ -73,6 +76,14 @@ class BoardGameType extends AbstractType
                 'required' => false,
                 'choice_label' => 'name',
                 'label' => 'Gamme',
+            ])
+            ->add('images', CollectionType::class, [
+                'entry_type' => ImageFormType::class,
+                'entry_options' => ['label' => false],
+                'allow_add' => true,
+                'allow_delete' => true,
+                'prototype' => true,
+                'by_reference' => false,
             ])
         ;
     }
