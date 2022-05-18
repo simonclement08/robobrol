@@ -14,15 +14,7 @@ class ProfilController extends AbstractController
      */
     public function index(User $user): Response
     {
-        $wishlist = $user->getBoardGameWishes();
-        $collection = $user->getBoardGameOwneds();
-        $user_notes = $user->getBoardGameNotes();
 
-        return $this->render('profil/index.html.twig', [
-            'user' => $user,
-            'wishlist' => $wishlist,
-            'collection' => $collection,
-            'user_notes' => $user_notes,
-        ]);
+        return $this->render('profil/index.html.twig', []);
     }
 }

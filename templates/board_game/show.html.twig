@@ -3,15 +3,28 @@
 {% block title %}Jeux de société{% endblock %}
 
 {% block body %}
-    <div class="board_game">
-        <a class="float-end" href="{{ path('board_game_edit', {'id': board_game.id}) }}">edit</a>
+    <div class="board_game board_game_body">
         {{ include('board_game/_delete_form.html.twig') }}
+        <a class="float-end" href="{{ path('board_game_edit', {'id': board_game.id}) }}"><button class="btn float-end" type="button"><i class="fa-solid fa-xl fa-pen"></i></button></a>
 
         <div class="row justify-content-center">
             <div class="col-sm-12 col-md-12 col-lg-5">
-                <a href="{{ vich_uploader_asset(board_game.images.0)}}">
-                    <img src="{{ vich_uploader_asset(board_game.images.0)| imagine_filter('show_board_game') }}" alt="{{ board_game.name }}">
-                </a>
+                <div class="ribbon">
+                    <a id="wish" href="{{ path('board_game_wish', {'id': board_game.id}) }}">
+                        {% if app.user and board_game.isWishByUser(app.user) %}
+                            <div class="content" title="Ajouter à votre liste d'envie ?"><i class="fa-solid fa-heart"></i></div>
+                        {% elseif app.user %}
+                            <div class="content" title="Ajouter à votre liste d'envie ?"><i class="fa-regular fa-heart"></i></div>
+                        {% endif %}
+                    </a>
+                </div>
+
+                {% if board_game.images.0 is defined %}
+                
+                    <a href="{{ vich_uploader_asset(board_game.images.0)}}">
+                        <img src="{{ vich_uploader_asset(board_game.images.0)| imagine_filter('show_board_game') }}" alt="{{ board_game.name }}">
+                    </a>
+                {% endif %}
             </div>
             <div class="col-sm-12 col-md-12 col-lg-7">
                 <h1>{{ board_game.name }}</h1>
@@ -39,5 +52,32 @@
             </div>
         </div>
     </div>
+
+{% endblock %}
+
+{% block javascripts %}
+
+<script>
+
+$('#wish').click(function(e){
+    e.preventDefault();
+    const url = this.href;
+    const fa = this.querySelector("i")
+
+    $.ajax({
+        url : url,
+        type : "POST",
+        success : function (response) {
+            if(response.wish == true){
+                fa.classList.replace('fa-regular','fa-solid')
+            }
+            if(response.wish == false){
+                fa.classList.replace('fa-solid','fa-regular')
+            }
+        }
+    });
+});
+
+</script>
 
 {% endblock %}

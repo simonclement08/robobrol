@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\User;
 
 /**
  * @ORM\Entity(repositoryClass=BoardGameRepository::class)
@@ -126,6 +127,11 @@ class BoardGame
      * @ORM\OneToMany(targetEntity=BoardGameType::class, mappedBy="boardGame", orphanRemoval=true)
      */
     private $boardGameTypes;
+
+    /**
+     * @ORM\OneToMany(targetEntity=BoardGameWish::class, mappedBy="boardGame", orphanRemoval=true)
+     */
+    private $boardGameWishes;
 
     /**
      * @ORM\OneToMany(targetEntity=BoardGameNote::class, mappedBy="boardGame", orphanRemoval=true)
@@ -480,6 +486,36 @@ class BoardGame
     }
 
     /**
+     * @return Collection<int, BoardGameWish>
+     */
+    public function getBoardGameWishes(): Collection
+    {
+        return $this->boardGameWishes;
+    }
+
+    public function addBoardGameWishes(BoardGameWish $boardGameWish): self
+    {
+        if (!$this->boardGameWishes->contains($boardGameWish)) {
+            $this->boardGameWishes[] = $boardGameWish;
+            $boardGameWish->setBoardGame($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBoardGameWishes(BoardGameWish $boardGameWish): self
+    {
+        if ($this->boardGameWishes->removeElement($boardGameWish)) {
+            // set the owning side to null (unless already changed)
+            if ($boardGameWish->getBoardGame() === $this) {
+                $boardGameWish->setBoardGame(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      * @return Collection<int, BoardGameNote>
      */
     public function getBoardGameNotes(): Collection
@@ -507,5 +543,14 @@ class BoardGame
         }
 
         return $this;
+    }
+
+    public function isWishByUser(User $user): bool
+    {
+        foreach ($this->boardGameWishes as $wish) {
+            if ($wish->getUser() === $user) return true;
+        }
+
+        return false;
     }
 }

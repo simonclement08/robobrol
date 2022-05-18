@@ -5,31 +5,31 @@
 {% block body %}
     <div class="row justify-content-center">
         {% for board_game in board_games %}
-            <div class="col-sm-12 col-md-6 col-lg-4">
-                <div class="board_game">
-                    <a href="{{ path('board_game_show', {'id': board_game.id}) }}">
-                        <div class="row justify-content-center">
-                            <div class="col text-center">
-                                <h4 class="title_board_game">{{ board_game.name }}</h4>
-                            </div>
-                        </div>
-                        <div class="row justify-content-center">
-                            <div class="col-6">
-                                    {% if board_game.images.0 is defined %}
-                                        <img src="{{ vich_uploader_asset(board_game.images.0)| imagine_filter('list_board_game') }}" alt="{{ board_game.name }}">
-                                    {% endif %}
-                            </div>
-                            <div class="col-6">
-                                <p>{{ board_game.target }}</p>
-                                <p>{{ board_game.ageMin }}</p>
-                                <p>{{ board_game.nbMinPlayer is same as board_game.nbMaxPlayer ? board_game.nbMaxPlayer ~ " joueurs" : "De " ~ board_game.nbMinPlayer ~ " à " ~ board_game.nbMaxPlayer ~ " joueurs" }}</p>
-                                <p>{{ board_game.gameTime }} minutes</p>
-                                <p>{{ board_game.price }}€</p>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            </div>
+            {% include 'board_game/board_game.html.twig' %}
         {% endfor %}
     </div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+
+$('[class="wish"]').click(function(e){
+    e.preventDefault();
+    const url = this.href;
+    const fa = this.querySelector("i")
+
+    $.ajax({
+        url : url,
+        type : "POST",
+        success : function (response) {
+            if(response.wish == true){
+                fa.classList.replace('fa-regular','fa-solid')
+            }
+            if(response.wish == false){
+                fa.classList.replace('fa-solid','fa-regular')
+            }
+        }
+    });
+});
+</script>
 {% endblock %}

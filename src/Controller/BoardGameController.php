@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\BoardGame;
+use App\Entity\BoardGameWish;
 use App\Form\BoardGameType;
 use App\Repository\BoardGameRepository;
+use App\Repository\BoardGameWishRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,9 +23,6 @@ class BoardGameController extends AbstractController
      */
     public function index(BoardGameRepository $boardGameRepository): Response
     {
-        foreach ($boardGameRepository->findAll() as $key => $board) {
-            $board->getImages()->initialize();
-        }
         return $this->render('board_game/index.html.twig', [
             'board_games' => $boardGameRepository->findAll(),
         ]);
@@ -67,7 +66,6 @@ class BoardGameController extends AbstractController
      */
     public function edit(Request $request, BoardGame $boardGame, BoardGameRepository $boardGameRepository, EntityManagerInterface $entityManager): Response
     {
-        dump($boardGame->getImages()->getValues());
         $form = $this->createForm(BoardGameType::class, $boardGame);
         $form->handleRequest($request);
 
@@ -100,10 +98,48 @@ class BoardGameController extends AbstractController
      */
     public function delete(Request $request, BoardGame $boardGame, BoardGameRepository $boardGameRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$boardGame->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $boardGame->getId(), $request->request->get('_token'))) {
             $boardGameRepository->remove($boardGame);
         }
 
         return $this->redirectToRoute('home', [], Response::HTTP_SEE_OTHER);
+    }
+
+    /**
+     * @Route("/board_game/{id}/wish", name="board_game_wish", methods={"POST"})
+     * @IsGranted("ROLE_USER")
+     */
+    public function wish(BoardGame $boardGame, EntityManagerInterface $entityManager, BoardGameWishRepository $boardGameWishRepository): Response
+    {
+        $user = $this->getUser();
+
+        if ($boardGame->isWishByUser($user)) {
+            $wish = $boardGameWishRepository->findOneBy([
+                'user' => $user,
+                'boardGame' => $boardGame
+            ]);
+            $entityManager->remove($wish);
+            $entityManager->flush();
+            return $this->json([
+                'wish' => false,
+                'game_wishes' => $boardGameWishRepository->count(
+                    ['user' => $user]
+                )
+            ], 200);
+        }
+
+        $wish = new BoardGameWish();
+
+        $wish->setUser($user)
+            ->setBoardGame($boardGame);
+
+        $entityManager->persist($wish);
+        $entityManager->flush();
+        return $this->json([
+            'wish' => true,
+            'game_wishes' => $boardGameWishRepository->count(
+                ['user' => $user]
+            )
+        ], 200);
     }
 }

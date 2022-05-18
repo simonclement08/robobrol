@@ -1,4 +1,4 @@
-body{
+body {
     background-color: #e7e7e7;
 }
 
@@ -7,7 +7,11 @@ body{
     src: url("../font/folkard_.ttf") format("truetype");
 }
 
-header{
+.width_80 {
+    width: 80%;
+}
+
+header {
     padding: 10px;
     background-color: #e60012;
     color: #ffffff;
@@ -22,26 +26,30 @@ header{
     color: #ffffff;
 }
 
-header > a, header > a:hover, header > a:active, .white, .white:hover, .white:active{
+header>a,
+header>a:hover,
+header>a:active,
+.white,
+.white:hover,
+.white:active {
     color: #ffffff;
 }
 
-a{
+a {
     text-decoration: none;
     color: black;
 }
 
-a:hover{
+a:hover {
     color: black;
 }
 
-a:active{
+a:active {
     color: black;
 }
 
-.board_game{
+.board_game {
     margin: 5px;
-    padding: 10px;
     min-height: 300px;
     box-shadow: 0 1px 4px rgb(0 0 0 / 10%);
     border: 3px solid #bf0010;
@@ -51,7 +59,11 @@ a:active{
     position: relative;
 }
 
-.board_game .title_board_game{
+.board_game_body {
+    padding: 10px;
+}
+
+.board_game .title_board_game {
     font-family: "Folkard";
     padding: 8px;
     text-align: center;
@@ -71,6 +83,25 @@ a:active{
     display: inline-block;
 }
 
-.list_image{
+.list_image {
     float: left;
+}
+
+.ribbon {
+    position: absolute;
+    background-color: #212529;
+    left: 10px;
+    top: -3px;
+    filter: drop-shadow(2px 3px 2px rgba(0, 0, 0, 0.5));
+    clip-path: polygon(0 0, 100% 0, 100% 80%, 50% 100%, 0 80%);
+}
+
+.content {
+    color: white;
+    font-size: 1.25rem;
+    text-align: center;
+    font-weight: 400;
+    padding: 15px 2px 4px;
+    min-height: 70px;
+    width: 43px;
 }

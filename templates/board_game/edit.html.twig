@@ -6,8 +6,4 @@
     <h1>Modifier un jeu</h1>
 
     {{ include('board_game/_form.html.twig', {'button_label': 'Modifier'}) }}
-
-    <a href="{{ path('home') }}">back to list</a>
-
-    {{ include('board_game/_delete_form.html.twig') }}
 {% endblock %}

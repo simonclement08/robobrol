@@ -1,0 +1,35 @@
+<div class="col-sm-12 col-md-6 col-lg-4">
+    <div class="board_game">
+        <div class="row justify-content-center">
+            <div class="col text-center">
+                <div class="ribbon">
+                    <a class="wish" href="{{ path('board_game_wish', {'id': board_game.id}) }}">
+                        {% if app.user and board_game.isWishByUser(app.user) %}
+                            <div class="content" title="Ajouter à votre liste d'envie ?"><i class="fa-solid fa-heart"></i></div>
+                        {% elseif app.user %}
+                            <div class="content" title="Ajouter à votre liste d'envie ?"><i class="fa-regular fa-heart"></i></div>
+                        {% endif %}
+                    </a>
+                </div>
+                <h4 class="title_board_game">{{ board_game.name }}</h4>
+            </div>
+        </div>
+        <a href="{{ path('board_game_show', {'id': board_game.id}) }}">
+
+            <div class="board_game_body row justify-content-center">
+                <div class="col-6">
+                        {% if board_game.images.0 is defined %}
+                            <img src="{{ vich_uploader_asset(board_game.images.0)| imagine_filter('list_board_game') }}" alt="{{ board_game.name }}">
+                        {% endif %}
+                </div>
+                <div class="col-6">
+                    <p>{{ board_game.target }}</p>
+                    <p>{{ board_game.ageMin }}</p>
+                    <p>{{ board_game.nbMinPlayer is same as board_game.nbMaxPlayer ? board_game.nbMaxPlayer ~ " joueurs" : "De " ~ board_game.nbMinPlayer ~ " à " ~ board_game.nbMaxPlayer ~ " joueurs" }}</p>
+                    <p>{{ board_game.gameTime }} minutes</p>
+                    <p>{{ board_game.price }}€</p>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>

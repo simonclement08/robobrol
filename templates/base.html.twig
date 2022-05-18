@@ -8,11 +8,7 @@
         <link href="{{ asset('/css/style.css') }}" rel="stylesheet">
         {% block stylesheets %}
         {% endblock %}
-
-        {% block javascripts %}
-        {% endblock %}
-        {{ tinymce_init() }}
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     </head>
     <body>
         <header>
@@ -32,7 +28,7 @@
                         {% endif %}
                     </ul>
                     {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                        {{ app.user.username }} | <a class="white nav-link" href="{{ path('app_logout') }}">Déconnexion</a>
+                        <a class="white nav-link" href="{{ path('profil_user', {'id': app.user.id}) }}"><i class="fa-solid fa-user"></i></a> | <a class="white nav-link" href="{{ path('app_logout') }}">Déconnexion</a>
                     {% else %}
                         <a class="white nav-link" href="{{ path('app_login') }}">Connexion</a> | <a class="white nav-link" href="{{ path('app_register') }}">Inscription</a>
                     {% endif %}
@@ -46,5 +42,10 @@
                 </div>
             </div>
         </div>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+        {{ tinymce_init() }}
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+        {% block javascripts %}
+        {% endblock %}
     </body>
 </html>

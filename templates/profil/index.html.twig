@@ -6,7 +6,7 @@
 
 <div class="row">
     <div class="col-12">
-        <h2>{{user.username}}</h2>
+        <h2>{{app.user.username}}</h2>
         <div class="board_game">
         </div>
     </div>
@@ -16,10 +16,10 @@
     <div class="col-12">
         <h2>Collection</h2>
         <div class="board_game">
-            {% for game in collection %}
+            {% for own in app.user.boardGameOwneds %}
                 <div class="row justify-content-center">
                     <div class="col-sm-12 col-md-6 col-lg-4">
-                        {{game.name}}
+                        {{own.boardGame.name}}
                     </div>
                 </div>
             {% endfor %}
@@ -30,16 +30,60 @@
 <div class="row">
     <div class="col-12">
         <h2>Liste de souhaits</h2>
-        <div class="board_game">
-            {% for game in wishlist %}
-                <div class="row justify-content-center">
-                    <div class="col-sm-12 col-md-6 col-lg-4">
-                        {{game.name}}
+        <div id="wishlist" class="row justify-content-center">
+            {% if app.user.boardGameWishes|length == 0 %}
+                <div class="col-sm-12 col-md-6 col-lg-4">
+                    <div class="board_game">
+                        <div class="row justify-content-center">
+                            <div class="col text-center">
+                                <p>Aucun jeu souhaité</p>
+                                <img class="width_80" src="{{ asset('/images/crying_eric_cartman.png') }}" />
+                            </div>
+                        </div>
                     </div>
                 </div>
+            {% endif %}
+            {% for wish in app.user.boardGameWishes %}
+                {% set board_game = wish.boardGame %}
+                
+                {% include 'board_game/board_game.html.twig' %}
             {% endfor %}
         </div>
     </div>
 </div>
 
+{% endblock %}
+
+
+{% block javascripts %}
+<script>
+
+$('[class="wish"]').click(function(e){
+    e.preventDefault();
+    const url = this.href;
+    const fa = this.parentElement.parentElement.parentElement.parentElement.parentElement
+console.log(fa)
+    $.ajax({
+        url : url,
+        type : "POST",
+        success : function (response) {
+            if(response.wish === false){
+                fa.remove()
+            }
+            if(response.game_wishes === 0){
+                $('#wishlist').html(`<div class="col-sm-12 col-md-6 col-lg-4">
+                    <div class="board_game">
+                        <div class="row justify-content-center">
+                            <div class="col text-center">
+                                <p>Aucun jeu souhaité</p>
+                                <img class="width_80" src="{{ asset('/images/crying_eric_cartman.png') }}" />
+                            </div>
+                        </div>
+                    </div>
+                </div>`);
+            }
+        }
+    });
+});
+</script>
 {% endblock %}
