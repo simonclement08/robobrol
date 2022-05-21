@@ -87,10 +87,19 @@ a:active {
     float: left;
 }
 
-.ribbon {
+.ribbon_wish {
     position: absolute;
     background-color: #212529;
     left: 10px;
+    top: -3px;
+    filter: drop-shadow(2px 3px 2px rgba(0, 0, 0, 0.5));
+    clip-path: polygon(0 0, 100% 0, 100% 80%, 50% 100%, 0 80%);
+}
+
+.ribbon_own {
+    position: absolute;
+    background-color: #212529;
+    left: 63px;
     top: -3px;
     filter: drop-shadow(2px 3px 2px rgba(0, 0, 0, 0.5));
     clip-path: polygon(0 0, 100% 0, 100% 80%, 50% 100%, 0 80%);

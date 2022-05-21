@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=ImageRepository::class)
@@ -18,11 +19,13 @@ class Image
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"ajax"})
      */
     private $id;
 
     /**
      * @Vich\UploadableField(mapping="board_game_image", fileNameProperty="imageName", size="imageSize")
+     * @Groups({"ajax"})
      * 
      * @var File|null
      */
@@ -30,6 +33,7 @@ class Image
 
     /**
      * @ORM\Column(type="string")
+     * @Groups({"ajax"})
      *
      * @var string|null
      */
@@ -37,6 +41,7 @@ class Image
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"ajax"})
      *
      * @var int|null
      */
@@ -101,7 +106,7 @@ class Image
     {
         return $this->imageName;
     }
-    
+
     public function setImageSize(?int $imageSize): void
     {
         $this->imageSize = $imageSize;

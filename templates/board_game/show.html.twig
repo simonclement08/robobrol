@@ -8,16 +8,30 @@
         <a class="float-end" href="{{ path('board_game_edit', {'id': board_game.id}) }}"><button class="btn float-end" type="button"><i class="fa-solid fa-xl fa-pen"></i></button></a>
 
         <div class="row justify-content-center">
-            <div class="col-sm-12 col-md-12 col-lg-5">
-                <div class="ribbon">
-                    <a id="wish" href="{{ path('board_game_wish', {'id': board_game.id}) }}">
-                        {% if app.user and board_game.isWishByUser(app.user) %}
-                            <div class="content" title="Ajouter à votre liste d'envie ?"><i class="fa-solid fa-heart"></i></div>
-                        {% elseif app.user %}
-                            <div class="content" title="Ajouter à votre liste d'envie ?"><i class="fa-regular fa-heart"></i></div>
-                        {% endif %}
-                    </a>
-                </div>
+            <div id="board_header{{board_game.id}}" class="col-sm-12 col-md-12 col-lg-5">
+                {% if app.user and board_game.isOwnByUser(app.user) %}
+                    <div class="ribbon_wish">
+                        <a class="own" href="{{ path('board_game_own', {'id': board_game.id}) }}">
+                                <div class="content" title="Supprimer de votre collection ?"><i class="fas fa-star"></i></div>
+                            
+                        </a>
+                    </div>
+                {% elseif app.user %}
+                    <div class="ribbon_own">
+                        <a class="own" href="{{ path('board_game_own', {'id': board_game.id}) }}">
+                            <div class="content" title="Ajouter à votre collection ?"><i class="far fa-star"></i></div>
+                        </a>
+                    </div>
+                    <div class="ribbon_wish">
+                        <a class="wish" href="{{ path('board_game_wish', {'id': board_game.id}) }}">
+                            {% if board_game.isWishByUser(app.user) %}
+                                <div class="content" title="Supprimer de votre liste d'envie ?"><i class="fa-solid fa-heart"></i></div>
+                            {% elseif app.user %}
+                                <div class="content" title="Ajouter à votre liste d'envie ?"><i class="fa-regular fa-heart"></i></div>
+                            {% endif %}
+                        </a>
+                    </div>
+                {% endif %}
 
                 {% if board_game.images.0 is defined %}
                 
@@ -59,7 +73,7 @@
 
 <script>
 
-$('#wish').click(function(e){
+$('[id*=board_header]').on("click", "[class='wish']", function(e){
     e.preventDefault();
     const url = this.href;
     const fa = this.querySelector("i")
@@ -73,6 +87,38 @@ $('#wish').click(function(e){
             }
             if(response.wish == false){
                 fa.classList.replace('fa-solid','fa-regular')
+            }
+        }
+    });
+});
+
+
+$('[id*=board_header]').on("click", "[class='own']", function(e){
+    e.preventDefault();
+    const url = this.href;
+    const ribbon_own = this.parentElement
+    const icon_own = this.querySelector("i")
+    const ribbon_wish = ribbon_own.parentElement.querySelector("div.ribbon_wish")
+
+    $.ajax({
+        url : url,
+        type : "POST",
+        success : function (response) {
+            if(response.own == true){
+                ribbon_wish.remove()
+                ribbon_own.classList.replace('ribbon_own','ribbon_wish')
+                icon_own.classList.replace('far','fas')
+            }
+            if(response.own == false){
+                ribbon_own.classList.replace('ribbon_wish','ribbon_own')
+                icon_own.classList.replace('fas','far')
+                var route = "{{ path('board_game_wish', {'id': 'board_game_id'}) }}"; 
+                route = route.replace("board_game_id", JSON.parse(response.board_game).id);
+                ribbon_own.parentElement.innerHTML += `<div class="ribbon_wish">
+                    <a class="wish" href="` + route + `">
+                        <div class="content" title="Supprimer de votre collection ?"><i class="fa-regular fa-heart"></i></div>
+                    </a>
+                </div>`
             }
         }
     });

@@ -3,10 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\BoardGame;
+use App\Entity\BoardGameOwned;
 use App\Entity\BoardGameWish;
 use App\Form\BoardGameType;
+use App\Repository\BoardGameOwnedRepository;
 use App\Repository\BoardGameRepository;
 use App\Repository\BoardGameWishRepository;
+use App\Repository\ImageRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,6 +18,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\Serializer\SerializerInterface;
+use Vich\UploaderBundle\Templating\Helper\UploaderHelper;
 
 class BoardGameController extends AbstractController
 {
@@ -137,6 +142,72 @@ class BoardGameController extends AbstractController
         $entityManager->flush();
         return $this->json([
             'wish' => true,
+            'game_wishes' => $boardGameWishRepository->count(
+                ['user' => $user]
+            )
+        ], 200);
+    }
+
+    /**
+     * @Route("/board_game/{id}/own", name="board_game_own", methods={"POST"})
+     * @IsGranted("ROLE_USER")
+     */
+    public function own(BoardGame $boardGame, EntityManagerInterface $entityManager, BoardGameWishRepository $boardGameWishRepository, BoardGameOwnedRepository $boardGameOwnedRepository, SerializerInterface $serializer, ImageRepository $imageRepository, UploaderHelper $helper): Response
+    {
+        $user = $this->getUser();
+
+        if ($boardGame->isOwnByUser($user)) {
+            $wish = $boardGameOwnedRepository->findOneBy([
+                'user' => $user,
+                'boardGame' => $boardGame
+            ]);
+            $entityManager->remove($wish);
+            $entityManager->flush();
+            return $this->json([
+                'own' => false,
+                'board_game' => $serializer->serialize(
+                    $boardGame,
+                    'json',
+                    ['groups' => 'ajax']
+                ),
+                'game_owned' => $boardGameOwnedRepository->count(
+                    ['user' => $user]
+                )
+            ], 200);
+        }
+
+        $own = new BoardGameOwned();
+        $own->setUser($user)
+            ->setBoardGame($boardGame);
+        $entityManager->persist($own);
+
+        if ($boardGame->isWishByUser($user)) {
+            $wish = $boardGameWishRepository->findOneBy([
+                'user' => $user,
+                'boardGame' => $boardGame
+            ]);
+            $entityManager->remove($wish);
+        }
+
+        $src = $imageRepository->findOneBy([
+            'position' => 1,
+            'boardGame' => $boardGame
+        ]);
+        $src = $src ? $helper->asset($src, 'imageFile') : "";
+
+        $entityManager->flush();
+
+        return $this->json([
+            'own' => true,
+            'board_game' => $serializer->serialize(
+                $boardGame,
+                'json',
+                ['groups' => 'ajax']
+            ),
+            'image' => $src,
+            'game_owned' => $boardGameOwnedRepository->count(
+                ['user' => $user]
+            ),
             'game_wishes' => $boardGameWishRepository->count(
                 ['user' => $user]
             )

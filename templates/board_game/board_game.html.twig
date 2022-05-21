@@ -1,16 +1,29 @@
 <div class="col-sm-12 col-md-6 col-lg-4">
     <div class="board_game">
         <div class="row justify-content-center">
-            <div class="col text-center">
-                <div class="ribbon">
-                    <a class="wish" href="{{ path('board_game_wish', {'id': board_game.id}) }}">
-                        {% if app.user and board_game.isWishByUser(app.user) %}
-                            <div class="content" title="Ajouter à votre liste d'envie ?"><i class="fa-solid fa-heart"></i></div>
-                        {% elseif app.user %}
-                            <div class="content" title="Ajouter à votre liste d'envie ?"><i class="fa-regular fa-heart"></i></div>
-                        {% endif %}
-                    </a>
-                </div>
+            <div id="board_header{{board_game.id}}" class="col text-center">
+                {% if app.user and board_game.isOwnByUser(app.user) %}
+                    <div class="ribbon_wish">
+                        <a class="own" href="{{ path('board_game_own', {'id': board_game.id}) }}">
+                                <div class="content" title="Supprimer de votre collection ?"><i class="fas fa-star"></i></div>
+                        </a>
+                    </div>
+                {% elseif app.user %}
+                    <div class="ribbon_own">
+                        <a class="own" href="{{ path('board_game_own', {'id': board_game.id}) }}">
+                            <div class="content" title="Ajouter à votre collection ?"><i class="far fa-star"></i></div>
+                        </a>
+                    </div>
+                    <div class="ribbon_wish">
+                        <a class="wish" href="{{ path('board_game_wish', {'id': board_game.id}) }}">
+                            {% if board_game.isWishByUser(app.user) %}
+                                <div class="content" title="Supprimer de votre liste d'envie ?"><i class="fa-solid fa-heart"></i></div>
+                            {% elseif app.user %}
+                                <div class="content" title="Ajouter à votre liste d'envie ?"><i class="fa-regular fa-heart"></i></div>
+                            {% endif %}
+                        </a>
+                    </div>
+                {% endif %}
                 <h4 class="title_board_game">{{ board_game.name }}</h4>
             </div>
         </div>

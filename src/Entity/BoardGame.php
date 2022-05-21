@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\User;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=BoardGameRepository::class)
@@ -18,6 +19,7 @@ class BoardGame
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"ajax"})
      */
     private $id;
 
@@ -27,6 +29,7 @@ class BoardGame
      * @Assert\Length(
      *     max = 255
      * )
+     * @Groups({"ajax"})
      */
     private $name;
 
@@ -40,6 +43,7 @@ class BoardGame
      * @ORM\Column(type="integer")
      * @Assert\NotBlank
      * @Assert\Range(min = 0)
+     * @Groups({"ajax"})
      */
     private $nbMinPlayer;
 
@@ -47,6 +51,7 @@ class BoardGame
      * @ORM\Column(type="integer")
      * @Assert\NotBlank
      * @Assert\Range(min = 1)
+     * @Groups({"ajax"})
      */
     private $nbMaxPlayer;
 
@@ -54,6 +59,7 @@ class BoardGame
      * @ORM\Column(type="integer")
      * @Assert\NotBlank
      * @Assert\Range(min = 5)
+     * @Groups({"ajax"})
      */
     private $gameTime;
 
@@ -61,12 +67,14 @@ class BoardGame
      * @ORM\Column(type="integer")
      * @Assert\NotBlank
      * @Assert\Range(min = 0)
+     * @Groups({"ajax"})
      */
     private $ageMin;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank
+     * @Groups({"ajax"})
      */
     private $target;
 
@@ -74,6 +82,7 @@ class BoardGame
      * @ORM\Column(type="float")
      * @Assert\NotBlank
      * @Assert\Range(min = 0)
+     * @Groups({"ajax"})
      */
     private $price;
 
@@ -95,6 +104,7 @@ class BoardGame
     /**
      * @ORM\OneToMany(targetEntity=Image::class, mappedBy="boardGame", orphanRemoval=true, cascade={"persist"})
      * @ORM\OrderBy({"position" = "ASC"})
+     * @Groups({"ajax"})
      */
     private $images;
 
@@ -132,6 +142,11 @@ class BoardGame
      * @ORM\OneToMany(targetEntity=BoardGameWish::class, mappedBy="boardGame", orphanRemoval=true)
      */
     private $boardGameWishes;
+
+    /**
+     * @ORM\OneToMany(targetEntity=BoardGameOwned::class, mappedBy="boardGame", orphanRemoval=true)
+     */
+    private $boardGameOwneds;
 
     /**
      * @ORM\OneToMany(targetEntity=BoardGameNote::class, mappedBy="boardGame", orphanRemoval=true)
@@ -516,6 +531,36 @@ class BoardGame
     }
 
     /**
+     * @return Collection<int, BoardGameOwned>
+     */
+    public function getBoardGameOwneds(): Collection
+    {
+        return $this->boardGameOwneds;
+    }
+
+    public function addBoardGameOwneds(BoardGameOwned $boardGameOwned): self
+    {
+        if (!$this->boardGameOwneds->contains($boardGameOwned)) {
+            $this->boardGameOwneds[] = $boardGameOwned;
+            $boardGameOwned->setBoardGame($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBoardGameOwneds(BoardGameOwned $boardGameOwned): self
+    {
+        if ($this->boardGameOwneds->removeElement($boardGameOwned)) {
+            // set the owning side to null (unless already changed)
+            if ($boardGameOwned->getBoardGame() === $this) {
+                $boardGameOwned->setBoardGame(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      * @return Collection<int, BoardGameNote>
      */
     public function getBoardGameNotes(): Collection
@@ -549,6 +594,15 @@ class BoardGame
     {
         foreach ($this->boardGameWishes as $wish) {
             if ($wish->getUser() === $user) return true;
+        }
+
+        return false;
+    }
+
+    public function isOwnByUser(User $user): bool
+    {
+        foreach ($this->boardGameOwneds as $own) {
+            if ($own->getUser() === $user) return true;
         }
 
         return false;
