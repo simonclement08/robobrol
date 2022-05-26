@@ -2,7 +2,6 @@
 
 namespace App\Form;
 
-use App\Entity\BoardGame;
 use App\Entity\Image;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -28,8 +27,7 @@ class ImageFormType extends AbstractType
                 'label'    => 'Position',
                 'required' => true,
                 'constraints' => [new Assert\Range(['min' => 0])],
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -5,6 +5,10 @@ namespace App\Form;
 use App\Entity\BoardGame;
 use App\Entity\Range;
 use App\Form\ImageFormType;
+use App\Form\BoardGameMarketFormType;
+use App\Form\BoardGameThemeFormType;
+use App\Form\BoardGameTypeFormType;
+use App\Form\VideoFormType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -16,7 +20,6 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Validator\Constraints as Assert;
-use Vich\UploaderBundle\Form\Type\VichImageType;
 
 
 class BoardGameType extends AbstractType
@@ -70,12 +73,36 @@ class BoardGameType extends AbstractType
                 'label' => 'Prix',
                 'constraints' => [new Assert\Range(['min' => 0])],
             ])
+            ->add('boardGameMarkets', CollectionType::class, [
+                'entry_type' => BoardGameMarketFormType::class,
+                'entry_options' => ['label' => false],
+                'allow_add' => true,
+                'allow_delete' => true,
+                'prototype' => true,
+                'by_reference' => false,
+            ])
             ->add('gamme', EntityType::class, [
                 'class' => Range::class,
                 'placeholder' => 'Choisir une gamme',
                 'required' => false,
                 'choice_label' => 'name',
                 'label' => 'Gamme',
+            ])
+            ->add('boardGameThemes', CollectionType::class, [
+                'entry_type' => BoardGameThemeFormType::class,
+                'entry_options' => ['label' => false],
+                'allow_add' => true,
+                'allow_delete' => true,
+                'prototype' => true,
+                'by_reference' => false,
+            ])
+            ->add('boardGameTypes', CollectionType::class, [
+                'entry_type' => BoardGameTypeFormType::class,
+                'entry_options' => ['label' => false],
+                'allow_add' => true,
+                'allow_delete' => true,
+                'prototype' => true,
+                'by_reference' => false,
             ])
             ->add('images', CollectionType::class, [
                 'entry_type' => ImageFormType::class,
@@ -85,7 +112,14 @@ class BoardGameType extends AbstractType
                 'prototype' => true,
                 'by_reference' => false,
             ])
-        ;
+            ->add('videos', CollectionType::class, [
+                'entry_type' => VideoFormType::class,
+                'entry_options' => ['label' => false],
+                'allow_add' => true,
+                'allow_delete' => true,
+                'prototype' => true,
+                'by_reference' => false,
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

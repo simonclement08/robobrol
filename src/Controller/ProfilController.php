@@ -10,9 +10,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class ProfilController extends AbstractController
 {
     /**
-     * @Route("/profil/{id}", name="profil_user", methods={"GET"})
+     * @Route("/profil", name="profil_user", methods={"GET"})
      */
-    public function index(User $user): Response
+    public function index(): Response
     {
 
         return $this->render('profil/index.html.twig', []);

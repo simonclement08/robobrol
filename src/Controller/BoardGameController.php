@@ -75,15 +75,51 @@ class BoardGameController extends AbstractController
         $form->handleRequest($request);
 
         $originalImages = new ArrayCollection();
+        $originalMarkets = new ArrayCollection();
+        $originalThemes = new ArrayCollection();
+        $originalTypes = new ArrayCollection();
+        $originalVideos = new ArrayCollection();
 
         foreach ($boardGame->getImages() as $image) {
             $originalImages->add($image);
+        }
+        foreach ($boardGame->getBoardGameMarkets() as $market) {
+            $originalMarkets->add($market);
+        }
+        foreach ($boardGame->getBoardGameThemes() as $theme) {
+            $originalThemes->add($theme);
+        }
+        foreach ($boardGame->getBoardGameTypes() as $type) {
+            $originalTypes->add($type);
+        }
+        foreach ($boardGame->getVideos() as $video) {
+            $originalVideos->add($video);
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
             foreach ($originalImages as $image) {
                 if (false === $boardGame->getImages()->contains($image)) {
                     $entityManager->remove($image);
+                }
+            }
+            foreach ($originalMarkets as $market) {
+                if (false === $boardGame->getBoardGameMarkets()->contains($market)) {
+                    $entityManager->remove($market);
+                }
+            }
+            foreach ($originalThemes as $theme) {
+                if (false === $boardGame->getBoardGameThemes()->contains($theme)) {
+                    $entityManager->remove($theme);
+                }
+            }
+            foreach ($originalTypes as $type) {
+                if (false === $boardGame->getBoardGameTypes()->contains($type)) {
+                    $entityManager->remove($type);
+                }
+            }
+            foreach ($originalVideos as $video) {
+                if (false === $boardGame->getVideos()->contains($video)) {
+                    $entityManager->remove($video);
                 }
             }
 

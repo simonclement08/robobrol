@@ -1,27 +1,121 @@
 {{ form_start(form) }}
-    {{ form_row(form.name) }}
+    <div class="row">
+        <div class="col">
+            {{ form_row(form.name) }}
+        </div>
+        <div class="col">
+            {{ form_row(form.gamme) }}
+        </div>
+    </div>
     {{ form_row(form.description) }}
-    {{ form_row(form.nbMinPlayer) }}
-    {{ form_row(form.nbMaxPlayer) }}
-    {{ form_row(form.gameTime) }}
-    {{ form_row(form.ageMin) }}
-    {{ form_row(form.target) }}
-    {{ form_row(form.price) }}
-    {{ form_row(form.gamme) }}
+    <div class="row">
+        <div class="col">
+            {{ form_row(form.nbMinPlayer) }}
+        </div>
+        <div class="col">
+            {{ form_row(form.nbMaxPlayer) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            {{ form_row(form.gameTime) }}
+        </div>
+        <div class="col">
+            {{ form_row(form.price) }}
+        </div>
+    </div>
+
+    <h3>Sites Marchand</h3>
+
+    <div class="markets row"
+        data-index="{{ form.boardGameMarkets|length > 0 ? form.boardGameMarkets|last.vars.name + 1 : 0 }}"
+        data-prototype="{{ form_widget(form.boardGameMarkets.vars.prototype)|e }}"
+    >
+        {% for market in form.boardGameMarkets %}
+            <div class="form_market col card_body">
+                {{ form_errors(market) }}
+                {{ form_row(market) }}
+            </div>
+        {% endfor %}
+    </div>
+    <div class="form-group">
+        <button type="button" class="btn btn-success add_item_link" data-collection-holder-class="markets">Ajouter un site</button>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            {{ form_row(form.target) }}
+        </div>
+        <div class="col">
+            {{ form_row(form.ageMin) }}
+        </div>
+    </div>
+
+    <h3>Thèmes</h3>
+
+    <div class="themes row"
+        data-index="{{ form.boardGameThemes|length > 0 ? form.boardGameThemes|last.vars.name + 1 : 0 }}"
+        data-prototype="{{ form_widget(form.boardGameThemes.vars.prototype)|e }}"
+    >
+        {% for theme in form.boardGameThemes %}
+            <div class="form_theme col card_body">
+                {{ form_errors(theme) }}
+                {{ form_row(theme) }}
+            </div>
+        {% endfor %}
+    </div>
+    <div class="form-group">
+        <button type="button" class="btn btn-success add_item_link" data-collection-holder-class="themes">Ajouter un thème</button>
+    </div>
+
+    <h3>Types</h3>
+
+    <div class="types row"
+        data-index="{{ form.boardGameTypes|length > 0 ? form.boardGameTypes|last.vars.name + 1 : 0 }}"
+        data-prototype="{{ form_widget(form.boardGameTypes.vars.prototype)|e }}"
+    >
+        {% for type in form.boardGameTypes %}
+            <div class="form_type col card_body">
+                {{ form_errors(type) }}
+                {{ form_row(type) }}
+            </div>
+        {% endfor %}
+    </div>
+    <div class="form-group">
+        <button type="button" class="btn btn-success add_item_link" data-collection-holder-class="types">Ajouter un type</button>
+    </div>
+
     <h3>Images</h3>
-    <div class="images"
+
+    <div class="images row"
         data-index="{{ form.images|length > 0 ? form.images|last.vars.name + 1 : 0 }}"
         data-prototype="{{ form_widget(form.images.vars.prototype)|e }}"
     >
-    {% for image in form.images %}
-            <div class="form_image">{{ form_row(image) }}</div>
-    {% endfor %}
+        {% for image in form.images %}
+            <div class="form_image col card_body">{{ form_row(image) }}</div>
+        {% endfor %}
     </div>
     <div class="form-group">
         <button type="button" class="btn btn-success add_item_link" data-collection-holder-class="images">Ajouter une image</button>
     </div>
+    
+    <h3>Videos</h3>
+
+    <div class="videos row"
+        data-index="{{ form.videos|length > 0 ? form.videos|last.vars.name + 1 : 0 }}"
+        data-prototype="{{ form_widget(form.videos.vars.prototype)|e }}"
+    >
+        {% for video in form.videos %}
+            <div class="form_video col card_body">{{ form_row(video) }}</div>
+        {% endfor %}
+    </div>
+    <div class="form-group">
+        <button type="button" class="btn btn-success add_item_link" data-collection-holder-class="videos">Ajouter une video</button>
+    </div>
+    {{ form_row(form._token) }}
+    
     <button class="btn btn-primary">{{ button_label|default('Enregistrer') }}</button>
-{{ form_end(form) }}
+{{ form_end(form, {render_rest: false}) }}
 
 {% block javascripts %}
 <script>
@@ -44,7 +138,7 @@ const addFormToCollection = (e) => {
     const collectionHolder = document.querySelector('.' + e.currentTarget.dataset.collectionHolderClass);
 
     const item = document.createElement('div');
-
+    item.classList.add("col-3");
     item.innerHTML = collectionHolder
     .dataset
     .prototype
@@ -68,6 +162,26 @@ document
     .querySelectorAll('div.images .form_image')
     .forEach((image) => {
         addTagFormDeleteLink(image)
+    });
+document
+    .querySelectorAll('div.markets .form_market')
+    .forEach((market) => {
+        addTagFormDeleteLink(market)
+    })
+document
+    .querySelectorAll('div.themes .form_theme')
+    .forEach((market) => {
+        addTagFormDeleteLink(market)
+    })
+document
+    .querySelectorAll('div.types .form_type')
+    .forEach((market) => {
+        addTagFormDeleteLink(market)
+    })
+document
+    .querySelectorAll('div.videos .form_video')
+    .forEach((video) => {
+        addTagFormDeleteLink(video)
     })
 </script>
 {% endblock %}

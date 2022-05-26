@@ -109,12 +109,12 @@ class BoardGame
     private $images;
 
     /**
-     * @ORM\OneToMany(targetEntity=BoardGameMarket::class, mappedBy="boardGame", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=BoardGameMarket::class, mappedBy="boardGame", orphanRemoval=true, cascade={"persist"})
      */
     private $boardGameMarkets;
 
     /**
-     * @ORM\OneToMany(targetEntity=Video::class, mappedBy="boardGame", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Video::class, mappedBy="boardGame", orphanRemoval=true, cascade={"persist"})
      */
     private $videos;
 
@@ -129,12 +129,12 @@ class BoardGame
     private $expansion;
 
     /**
-     * @ORM\OneToMany(targetEntity=BoardGameTheme::class, mappedBy="boardGame", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=BoardGameTheme::class, mappedBy="boardGame", orphanRemoval=true, cascade={"persist"})
      */
     private $boardGameThemes;
 
     /**
-     * @ORM\OneToMany(targetEntity=BoardGameType::class, mappedBy="boardGame", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=BoardGameType::class, mappedBy="boardGame", orphanRemoval=true, cascade={"persist"})
      */
     private $boardGameTypes;
 
