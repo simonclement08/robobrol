@@ -6,10 +6,13 @@ use App\Entity\BoardGame;
 use App\Entity\BoardGameOwned;
 use App\Entity\BoardGameWish;
 use App\Form\BoardGameType;
+use App\Form\FilterFormType;
 use App\Repository\BoardGameOwnedRepository;
 use App\Repository\BoardGameRepository;
 use App\Repository\BoardGameWishRepository;
 use App\Repository\ImageRepository;
+use App\Repository\ThemeRepository;
+use App\Repository\TypeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,10 +29,86 @@ class BoardGameController extends AbstractController
     /**
      * @Route("/", name="home", methods={"GET"})
      */
-    public function index(BoardGameRepository $boardGameRepository): Response
+    public function index(BoardGameRepository $boardGameRepository, ThemeRepository $themeRepository, TypeRepository $typeRepository, Request $request): Response
     {
+        $form = $this->createForm(FilterFormType::class, null, [
+            'method' => 'GET',
+        ]);
+        $form->handleRequest($request);
+
+        $search = $form->get('search')->getData();
+        $price = $form->get('price')->getData();
+        $nb_players = $form->get('nb_player')->getData();
+        $game_time = $form->get('game_time')->getData();
+        $target = $form->get('target')->getData();
+        $age_min = $form->get('age_min')->getData();
+        $gamme = $form->get('gamme')->getData();
+        $theme = $form->get('theme')->getData();
+        $type = $form->get('type')->getData();
+
+        $boardGames = $boardGameRepository->createQueryBuilder('b')
+            ->leftJoin('b.boardGameThemes', 'th')
+            ->leftJoin('b.boardGameTypes', 't')
+            ->where('b.name LIKE :name')
+            ->setParameter('name', '%' . $search . '%');
+        dump($form->getData());
+
+        if ($price === '+60') {
+            $boardGames = $boardGames->andWhere('b.price > 61');
+        } elseif ($price) {
+            $boardGames->andWhere('b.price <= ' . $price);
+        }
+
+        if ($nb_players === 9) {
+            $boardGames = $boardGames->andWhere('b.nbMaxPlayer >= ' . $nb_players);
+        } elseif ($nb_players) {
+            $boardGames = $boardGames->andWhere('b.nbMinPlayer <= ' . $nb_players . ' and b.nbMaxPlayer >= ' . $nb_players);
+        }
+
+        if ($game_time) {
+            $game_time = explode("-", $game_time);
+            $boardGames = $boardGames->andWhere('b.gameTime >= ' . $game_time[0]);
+            if (isset($game_time[1])) {
+                $boardGames->andWhere('b.gameTime <= ' . $game_time[1]);
+            }
+        }
+
+        if ($target) {
+            $boardGames = $boardGames->andWhere('b.target = :target')
+                ->setParameter('target', $target);
+        }
+
+        if ($age_min) {
+            $age_min = explode("-", $age_min);
+            $boardGames = $boardGames->andWhere('b.ageMin >= ' . $age_min[0]);
+            if (isset($age_min[1])) {
+                $boardGames = $boardGames->andWhere('b.ageMin <= ' . $age_min[1]);
+            }
+        }
+
+        if ($gamme) {
+            $boardGames = $boardGames->andWhere('b.gamme = :target')
+                ->setParameter('target', $gamme);
+        }
+
+        if ($theme) {
+            $boardGames = $boardGames->andWhere('th.theme = :theme')
+                ->setParameter('theme', $theme);
+        }
+
+        if ($type) {
+            $boardGames = $boardGames->andWhere('t.type = :type')
+                ->setParameter('type', $type);
+        }
+
+        $boardGames = $boardGames->groupBy('b.id')
+            ->orderBy('b.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+
         return $this->render('board_game/index.html.twig', [
-            'board_games' => $boardGameRepository->findAll(),
+            'board_games' => $boardGames,
+            'form' => $form->createView(),
         ]);
     }
 

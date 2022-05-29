@@ -59,12 +59,16 @@ a:active {
     position: relative;
 }
 
+.board_game p {
+    font-weight: 700;
+    color: #43403d;
+}
+
 .board_game_body {
     padding: 10px;
 }
 
 .board_game .title_board_game {
-    font-family: "Folkard";
     padding: 8px;
     text-align: center;
     font-size: 18px;
@@ -77,6 +81,38 @@ a:active {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+#filter {
+    margin-top: 18px;
+    background-color: #ffffff;
+    border-radius: 10px;
+}
+
+#filter_header {
+    padding: 8px;
+    text-align: center;
+    font-size: 18px;
+    min-height: 55px;
+    font-weight: 700;
+    background-color: #3d3938;
+    border-radius: 10px 10px 0px 0px;
+    color: #ffffff;
+    vertical-align: middle;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#filter_body {
+    padding: 10px;
+}
+
+#filter_footer {
+    padding: 10px;
+    min-height: 55px;
+    border-radius: 0px 0px 10px 10px;
+    background-color: #d7c9c9;
 }
 
 .list_image.item {

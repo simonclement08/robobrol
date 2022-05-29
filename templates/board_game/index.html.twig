@@ -3,11 +3,58 @@
 {% block title %}Jeux de société{% endblock %}
 
 {% block body %}
-    <div class="row justify-content-center">
-        {% for board_game in board_games %}
-            {% include 'board_game/board_game.html.twig' %}
-        {% endfor %}
-    </div>
+    {{ form_start(form) }}
+
+        <div class="row justify-content-center m-4">
+            <div class="form-group col-8">
+                {{ form_widget(form.search) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 col-md-4 col-lg-3">
+                <div id="filter">
+                    <div id="filter_header">
+                        <h4>Filtres</h4>
+                    </div>
+                    <div id="filter_body">
+                        {{ form_row(form.price) }}
+                        {{ form_row(form.nb_player) }}
+                        {{ form_row(form.game_time) }}
+                        {{ form_row(form.target) }}
+                        {{ form_row(form.age_min) }}
+                        {{ form_row(form.gamme) }}
+                        {{ form_row(form.theme) }}
+                        {{ form_row(form.type) }}
+                    </div>
+                    <div id="filter_footer">
+                        <div class="row justify-content-center">
+                            <button class="col-auto btn btn-secondary my-2 my-sm-0" type="submit">Appliquer les filtres</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-8 col-lg-9">
+                <div class="row justify-content-center">
+                    {% if board_games|length %}
+                        {% for board_game in board_games %}
+                            {% include 'board_game/board_game.html.twig' %}
+                        {% endfor %}
+                    {% else %}
+                        <div class="col-sm-12 col-md-12 col-lg-6">
+                            <div class="board_game">
+                                <div class="row justify-content-center">
+                                    <div class="col text-center">
+                                        <p>Aucun résultat</p>
+                                        <img class="width_80" src="{{ asset('/images/barney.png') }}" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {{ form_end(form) }}
 {% endblock %}
 
 {% block javascripts %}

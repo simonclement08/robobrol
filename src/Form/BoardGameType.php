@@ -60,7 +60,6 @@ class BoardGameType extends AbstractType
             ->add('target', ChoiceType::class, [
                 'required' => true,
                 'label' => 'Cible',
-                'required' => true,
                 'choices' => [
                     'Enfant' => 'Enfant',
                     'Tout Public' => 'Tout Public',
