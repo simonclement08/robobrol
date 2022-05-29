@@ -9,6 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\User;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity(repositoryClass=BoardGameRepository::class)
@@ -152,6 +153,15 @@ class BoardGame
      * @ORM\OneToMany(targetEntity=BoardGameNote::class, mappedBy="boardGame", orphanRemoval=true)
      */
     private $boardGameNotes;
+
+    /**
+     * @var string|null
+     *
+     * @Gedmo\Slug(fields={"name"})
+     * @ORM\Column(length=128, unique=true)
+     * @Groups({"ajax"})
+     */
+    private $slug;
 
     public function __construct()
     {
@@ -588,6 +598,11 @@ class BoardGame
         }
 
         return $this;
+    }
+
+    public function getSlug()
+    {
+        return $this->slug;
     }
 
     public function isWishByUser(User $user): bool

@@ -99,8 +99,8 @@ $('[id*=board_header]').on("click", "[class='own']", function(e){
             if(response.own == false){
                 ribbon_own.classList.replace('ribbon_wish','ribbon_own')
                 icon_own.classList.replace('fas','far')
-                var route = "{{ path('board_game_wish', {'id': 'board_game_id'}) }}"; 
-                route = route.replace("board_game_id", JSON.parse(response.board_game).id);
+                var route = "{{ path('board_game_wish', {'slug': 'board_game_slug'}) }}"; 
+                route = route.replace("board_game_slug", JSON.parse(response.board_game).slug);
                 ribbon_own.parentElement.innerHTML += `<div class="ribbon_wish">
                     <a class="wish" href="` + route + `">
                         <div class="content" title="Supprimer de votre collection ?"><i class="fa-regular fa-heart"></i></div>

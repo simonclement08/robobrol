@@ -5,25 +5,25 @@
 {% block body %}
     <div class="board_game board_game_body">
         {{ include('board_game/_delete_form.html.twig') }}
-        <a class="float-end" href="{{ path('board_game_edit', {'id': board_game.id}) }}"><button class="btn float-end" type="button"><i class="fa-solid fa-xl fa-pen"></i></button></a>
+        <a class="float-end" href="{{ path('board_game_edit', {'slug': board_game.slug}) }}"><button class="btn float-end" type="button"><i class="fa-solid fa-xl fa-pen"></i></button></a>
 
         <div class="row justify-content-center">
             <div id="board_header{{board_game.id}}" class="col-sm-12 col-md-12 col-lg-5">
                 {% if app.user and board_game.isOwnByUser(app.user) %}
                     <div class="ribbon_wish">
-                        <a class="own" href="{{ path('board_game_own', {'id': board_game.id}) }}">
+                        <a class="own" href="{{ path('board_game_own', {'slug': board_game.slug}) }}">
                                 <div class="content" title="Supprimer de votre collection ?"><i class="fas fa-star"></i></div>
                             
                         </a>
                     </div>
                 {% elseif app.user %}
                     <div class="ribbon_own">
-                        <a class="own" href="{{ path('board_game_own', {'id': board_game.id}) }}">
+                        <a class="own" href="{{ path('board_game_own', {'slug': board_game.slug}) }}">
                             <div class="content" title="Ajouter à votre collection ?"><i class="far fa-star"></i></div>
                         </a>
                     </div>
                     <div class="ribbon_wish">
-                        <a class="wish" href="{{ path('board_game_wish', {'id': board_game.id}) }}">
+                        <a class="wish" href="{{ path('board_game_wish', {'slug': board_game.slug}) }}">
                             {% if board_game.isWishByUser(app.user) %}
                                 <div class="content" title="Supprimer de votre liste d'envie ?"><i class="fa-solid fa-heart"></i></div>
                             {% elseif app.user %}
@@ -112,8 +112,8 @@ $('[id*=board_header]').on("click", "[class='own']", function(e){
             if(response.own == false){
                 ribbon_own.classList.replace('ribbon_wish','ribbon_own')
                 icon_own.classList.replace('fas','far')
-                var route = "{{ path('board_game_wish', {'id': 'board_game_id'}) }}"; 
-                route = route.replace("board_game_id", JSON.parse(response.board_game).id);
+                var route = "{{ path('board_game_wish', {'slug': 'board_game_slug'}) }}"; 
+                route = route.replace("board_game_slug", JSON.parse(response.board_game).slug);
                 ribbon_own.parentElement.innerHTML += `<div class="ribbon_wish">
                     <a class="wish" href="` + route + `">
                         <div class="content" title="Supprimer de votre collection ?"><i class="fa-regular fa-heart"></i></div>

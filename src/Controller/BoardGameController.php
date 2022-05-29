@@ -135,7 +135,7 @@ class BoardGameController extends AbstractController
     }
 
     /**
-     * @Route("/board_game/{id}", name="board_game_show", methods={"GET"})
+     * @Route("/board_game/{slug}", name="board_game_show", methods={"GET"})
      */
     public function show(BoardGame $boardGame): Response
     {
@@ -145,7 +145,7 @@ class BoardGameController extends AbstractController
     }
 
     /**
-     * @Route("/board_game/{id}/edit", name="board_game_edit", methods={"GET", "POST"})
+     * @Route("/board_game/{slug}/edit", name="board_game_edit", methods={"GET", "POST"})
      * @IsGranted("ROLE_ADMIN")
      */
     public function edit(Request $request, BoardGame $boardGame, BoardGameRepository $boardGameRepository, EntityManagerInterface $entityManager): Response
@@ -213,7 +213,7 @@ class BoardGameController extends AbstractController
     }
 
     /**
-     * @Route("/board_game/{id}", name="board_game_delete", methods={"POST"})
+     * @Route("/board_game/{slug}", name="board_game_delete", methods={"POST"})
      * @IsGranted("ROLE_ADMIN")
      */
     public function delete(Request $request, BoardGame $boardGame, BoardGameRepository $boardGameRepository): Response
@@ -226,7 +226,7 @@ class BoardGameController extends AbstractController
     }
 
     /**
-     * @Route("/board_game/{id}/wish", name="board_game_wish", methods={"POST"})
+     * @Route("/board_game/{slug}/wish", name="board_game_wish", methods={"POST"})
      * @IsGranted("ROLE_USER")
      */
     public function wish(BoardGame $boardGame, EntityManagerInterface $entityManager, BoardGameWishRepository $boardGameWishRepository): Response
@@ -264,7 +264,7 @@ class BoardGameController extends AbstractController
     }
 
     /**
-     * @Route("/board_game/{id}/own", name="board_game_own", methods={"POST"})
+     * @Route("/board_game/{slug}/own", name="board_game_own", methods={"POST"})
      * @IsGranted("ROLE_USER")
      */
     public function own(BoardGame $boardGame, EntityManagerInterface $entityManager, BoardGameWishRepository $boardGameWishRepository, BoardGameOwnedRepository $boardGameOwnedRepository, SerializerInterface $serializer, ImageRepository $imageRepository, UploaderHelper $helper): Response

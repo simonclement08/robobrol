@@ -66,7 +66,7 @@
 {% block javascripts %}
 <script>
 
-$('[class="wish"]').click(function(e){
+$('[id*=wishlist]').on("click", "[class='wish']", function(e){
     e.preventDefault();
     const url = this.href;
     const block = this.parentElement.parentElement.parentElement.parentElement.parentElement
@@ -93,11 +93,7 @@ $('[class="wish"]').click(function(e){
         }
     });
 });
-
-$('[class="own"]').click(function(e){
-    e.preventDefault();
-    const url = this.href;
-    const block = this.parentElement.parentElement.parentElement.parentElement.parentElement
+function owned(url, block){
     $.ajax({
         url : url,
         type : "POST",
@@ -123,10 +119,10 @@ $('[class="own"]').click(function(e){
                     $('#owned').empty()
                 }
                 var board_game = JSON.parse(response.board_game)
-                var route_own = "{{ path('board_game_own', {'id': 'board_game_id'}) }}"; 
-                route_own = route_own.replace("board_game_id", board_game.id);
-                var route_show = "{{ path('board_game_show', {'id': 'board_game_id'}) }}"; 
-                route_show = route_show.replace("board_game_id", board_game.id);
+                var route_own = "{{ path('board_game_own', {'slug': 'board_game_slug'}) }}"; 
+                route_own = route_own.replace("board_game_slug", board_game.slug);
+                var route_show = "{{ path('board_game_show', {'slug': 'board_game_slug'}) }}"; 
+                route_show = route_show.replace("board_game_slug", board_game.slug);
                 var append = `
                 <div class="col-sm-12 col-md-6 col-lg-4">
                     <div class="board_game">
@@ -141,7 +137,7 @@ $('[class="own"]').click(function(e){
                                 <h4 class="title_board_game">` + board_game.name + `"</h4>
                             </div>
                         </div>
-                        <a href="` + route_own + `">
+                        <a href="` + route_show + `">
 
                             <div class="board_game_body row justify-content-center">
                                 <div class="col-6"> `
@@ -179,6 +175,21 @@ $('[class="own"]').click(function(e){
             }
         }
     });
+}
+
+$('[id*=wishlist]').on("click", "[class='own']", function(e){
+    
+    e.preventDefault();
+    const url = this.href;
+    const block = this.parentElement.parentElement.parentElement.parentElement.parentElement
+    owned(url, block)
+});
+$('[id*=owned]').on("click", "[class='own']", function(e){
+    
+    e.preventDefault();
+    const url = this.href;
+    const block = this.parentElement.parentElement.parentElement.parentElement.parentElement
+    owned(url, block)
 });
 </script>
 {% endblock %}
