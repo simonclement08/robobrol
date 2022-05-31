@@ -4,65 +4,146 @@
 
 {% block body %}
     <div class="board_game board_game_body">
-        {{ include('board_game/_delete_form.html.twig') }}
-        <a class="float-end" href="{{ path('board_game_edit', {'slug': board_game.slug}) }}"><button class="btn float-end" type="button"><i class="fa-solid fa-xl fa-pen"></i></button></a>
-
-        <div class="row justify-content-center">
-            <div id="board_header{{board_game.id}}" class="col-sm-12 col-md-12 col-lg-5">
-                {% if app.user and board_game.isOwnByUser(app.user) %}
-                    <div class="ribbon_wish">
-                        <a class="own" href="{{ path('board_game_own', {'slug': board_game.slug}) }}">
-                                <div class="content" title="Supprimer de votre collection ?"><i class="fas fa-star"></i></div>
-                            
-                        </a>
-                    </div>
-                {% elseif app.user %}
-                    <div class="ribbon_own">
-                        <a class="own" href="{{ path('board_game_own', {'slug': board_game.slug}) }}">
-                            <div class="content" title="Ajouter à votre collection ?"><i class="far fa-star"></i></div>
-                        </a>
-                    </div>
-                    <div class="ribbon_wish">
-                        <a class="wish" href="{{ path('board_game_wish', {'slug': board_game.slug}) }}">
-                            {% if board_game.isWishByUser(app.user) %}
-                                <div class="content" title="Supprimer de votre liste d'envie ?"><i class="fa-solid fa-heart"></i></div>
-                            {% elseif app.user %}
-                                <div class="content" title="Ajouter à votre liste d'envie ?"><i class="fa-regular fa-heart"></i></div>
-                            {% endif %}
-                        </a>
-                    </div>
-                {% endif %}
-
-                {% if board_game.images.0 is defined %}
-                
-                    <a href="{{ vich_uploader_asset(board_game.images.0)}}">
-                        <img src="{{ vich_uploader_asset(board_game.images.0)| imagine_filter('show_board_game') }}" alt="{{ board_game.name }}">
-                    </a>
-                {% endif %}
-            </div>
-            <div class="col-sm-12 col-md-12 col-lg-7">
-                <h1>{{ board_game.name }}</h1>
-                <p><i class="fas fa-signal"></i> {{ board_game.target }}</p>
-                <p><i class="fas fa-baby"></i> A partir de {{ board_game.ageMin }} ans</p>
-                <p><i class="fas fa-users"></i> {{ board_game.nbMinPlayer is same as board_game.nbMaxPlayer ? board_game.nbMaxPlayer ~ " joueurs" : "De " ~ board_game.nbMinPlayer ~ " à " ~ board_game.nbMaxPlayer ~ " joueurs" }}</p>
-                <p><i class="fas fa-clock"></i> {{ board_game.gameTime }} minutes</p>
-                <p><i class="fas fa-coins"></i> {{ board_game.price }}€</p>
-                <div class="list_image row">
-                    {% for image in board_game.images %}
-                        {% if image.position is not same as 1 %}
-                            <div class="list_image item col-auto">
-                                <a href="{{ vich_uploader_asset(image)}}">
-                                    <img src="{{ vich_uploader_asset(image)| imagine_filter('mini_board_game') }}" alt="{{ board_game.name }}">
+        {% if is_granted('ROLE_ADMIN') %}
+            {{ include('board_game/_delete_form.html.twig') }}
+            <a class="float-end" href="{{ path('board_game_edit', {'slug': board_game.slug}) }}"><button class="btn float-end" type="button"><i class="fa-solid fa-xl fa-pen"></i></button></a>
+        {% endif %}
+        <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-9">
+                <div class="row">
+                    <div id="board_header{{board_game.id}}" class="col-sm-12 col-md-12 col-lg-5">
+                        {% if app.user and board_game.isOwnByUser(app.user) %}
+                            <div class="ribbon_wish">
+                                <a class="own" href="{{ path('board_game_own', {'slug': board_game.slug}) }}">
+                                        <div class="content" title="Supprimer de votre collection ?"><i class="fas fa-star"></i></div>
+                                </a>
+                            </div>
+                        {% elseif app.user %}
+                            <div class="ribbon_own">
+                                <a class="own" href="{{ path('board_game_own', {'slug': board_game.slug}) }}">
+                                    <div class="content" title="Ajouter à votre collection ?"><i class="far fa-star"></i></div>
+                                </a>
+                            </div>
+                            <div class="ribbon_wish">
+                                <a class="wish" href="{{ path('board_game_wish', {'slug': board_game.slug}) }}">
+                                    {% if board_game.isWishByUser(app.user) %}
+                                        <div class="content" title="Supprimer de votre liste d'envie ?"><i class="fa-solid fa-heart"></i></div>
+                                    {% elseif app.user %}
+                                        <div class="content" title="Ajouter à votre liste d'envie ?"><i class="fa-regular fa-heart"></i></div>
+                                    {% endif %}
                                 </a>
                             </div>
                         {% endif %}
-                    {% endfor %}
+
+                        {% if board_game.images.0 is defined %}
+                        
+                            <a href="{{ vich_uploader_asset(board_game.images.0)}}">
+                                <img src="{{ vich_uploader_asset(board_game.images.0)| imagine_filter('show_board_game') }}" alt="{{ board_game.name }}">
+                            </a>
+                        {% endif %}
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-lg-7">
+                        <h1>{{ board_game.name }}</h1>
+                        <p><i class="fas fa-signal"></i> {{ board_game.target }}</p>
+                        <p><i class="fas fa-users"></i> {{ board_game.nbMinPlayer is same as board_game.nbMaxPlayer ? board_game.nbMaxPlayer ~ " joueurs" : "De " ~ board_game.nbMinPlayer ~ " à " ~ board_game.nbMaxPlayer ~ " joueurs" }}</p>
+                        <p><i class="fas fa-clock"></i> {{ board_game.gameTime }} minutes</p>
+                        <p><i class="fas fa-baby"></i> A partir de {{ board_game.ageMin }} ans</p>
+                        <p><i class="fas fa-coins"></i> {{ board_game.price }}€</p>
+                        <div class="list_image row">
+                            {% for image in board_game.images %}
+                                {% if image.position is not same as 1 %}
+                                    <div class="list_image item col-auto">
+                                        <a href="{{ vich_uploader_asset(image)}}">
+                                            <img src="{{ vich_uploader_asset(image)| imagine_filter('mini_board_game') }}" alt="{{ board_game.name }}">
+                                        </a>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-12 col-md-12 col-lg-8">
-                {{ board_game.description|raw }}
+                <div class="row justify-content-center">
+                    <div class="col-sm-10 col-md-10 col-lg-10">
+                        <ul class="nav nav-tabs row" id="myTab" role="tablist">
+                            <li class="nav-item col-auto" role="presentation">
+                                <button class="nav-link active onglet" id="description-tab" data-bs-toggle="tab" data-bs-target="#description" type="button" role="tab" aria-controls="description" aria-selected="true">Description</button>
+                            </li>
+                            <li class="nav-item col-auto" role="presentation">
+                                <button class="nav-link onglet" id="fiche-tab" data-bs-toggle="tab" data-bs-target="#fiche" type="button" role="tab" aria-controls="fiche" aria-selected="false">Fiche technique</button>
+                            </li>
+                            {% if board_game.videos|length %}
+                                <li class="nav-item col-auto" role="presentation">
+                                    <button class="nav-link onglet" id="videos-tab" data-bs-toggle="tab" data-bs-target="#videos" type="button" role="tab" aria-controls="videos" aria-selected="false">Vidéos</button>
+                                </li>
+                            {% endif %}
+                        </ul>
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade show active" id="description" role="tabpanel" aria-labelledby="description-tab">
+                                {{ board_game.description|raw }}
+                            </div>
+                            <div class="tab-pane fade" id="fiche" role="tabpanel" aria-labelledby="fiche-tab">
+                                <table class="table table-bordered">
+                                    <tbody>
+                                        <tr>
+                                            <td scope="col">Cible</td>
+                                            <td scope="col">
+                                                {{ board_game.target }}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td scope="col">Nombre de joueurs</td>
+                                            <td scope="col">
+                                                {{ board_game.nbMinPlayer is same as board_game.nbMaxPlayer ? board_game.nbMaxPlayer ~ " joueurs" : "De " ~ board_game.nbMinPlayer ~ " à " ~ board_game.nbMaxPlayer ~ " joueurs" }}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Durée</td>
+                                            <td>
+                                                {{ board_game.gameTime }} minutes
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Age</td>
+                                            <td>
+                                                A partir de {{ board_game.ageMin }} ans
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Thème(s)</td>
+                                            <td>
+                                                {% for theme in board_game.boardGameThemes  %}
+                                                    <span class="feature">{{theme.theme.name}}</span>
+                                                {% endfor %}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Type(s)</td>
+                                            <td>
+                                                {% for type in board_game.boardGameTypes  %}
+                                                    <span class="feature">{{type.type.name}}</span>
+                                                {% endfor %}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Gamme</td>
+                                            <td>
+                                               {{ board_game.gamme.name }}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="tab-pane fade" id="videos" role="tabpanel" aria-labelledby="videos-tab">
+                                {% for video in board_game.videos  %}
+                                    <div class="row justify-content-center m-3">
+                                        <iframe width="560" height="315" src="https://www.youtube.com/embed/{{video.link}}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
             </div>
         </div>
     </div>

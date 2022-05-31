@@ -1,5 +1,6 @@
 body {
     background-color: #e7e7e7;
+    font-size: 18px;
 }
 
 @font-face {
@@ -149,4 +150,28 @@ a:active {
     padding: 15px 2px 4px;
     min-height: 70px;
     width: 43px;
+}
+
+.onglet {
+    background-color: #e60012 !important;
+    color: #ffffff !important;
+    margin: 0px;
+}
+
+button.active {
+    background-color: #212529 !important;
+}
+
+#myTabContent {
+    border: #212529 solid 1px;
+    border-radius: 2px;
+    padding: 10px;
+    margin: 0px;
+}
+
+.feature {
+    background-color: #d3d1cf;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 5px;
 }
