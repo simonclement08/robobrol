@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\BoardGameNoteRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=BoardGameNoteRepository::class)
@@ -26,16 +27,19 @@ class BoardGameNote
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="boardGameNotes")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"note"})
      */
     private $user;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"note"})
      */
     private $note;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"note"})
      */
     private $comment;
 

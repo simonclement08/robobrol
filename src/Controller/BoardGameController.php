@@ -51,7 +51,6 @@ class BoardGameController extends AbstractController
             ->leftJoin('b.boardGameTypes', 't')
             ->where('b.name LIKE :name')
             ->setParameter('name', '%' . $search . '%');
-        dump($form->getData());
 
         if ($price === '+60') {
             $boardGames = $boardGames->andWhere('b.price > 61');
@@ -125,7 +124,7 @@ class BoardGameController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
             $boardGameRepository->add($boardGame);
-            return $this->redirectToRoute('home', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('board_game_show', ['slug' => $boardGame->getSlug()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('board_game/new.html.twig', [
@@ -203,7 +202,7 @@ class BoardGameController extends AbstractController
             }
 
             $boardGameRepository->add($boardGame);
-            return $this->redirectToRoute('home', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('board_game_show', ['slug' => $boardGame->getSlug()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('board_game/edit.html.twig', [

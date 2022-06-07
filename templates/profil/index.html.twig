@@ -124,7 +124,7 @@ function owned(url, block){
                 var route_show = "{{ path('board_game_show', {'slug': 'board_game_slug'}) }}"; 
                 route_show = route_show.replace("board_game_slug", board_game.slug);
                 var append = `
-                <div class="col-sm-12 col-md-6 col-lg-4">
+                <div class="col-sm-12 col-md-12 col-lg-6">
                     <div class="board_game">
                         <div class="row justify-content-center">
                             <div id="board_header` + board_game.id + `" class="col text-center">
@@ -149,11 +149,11 @@ function owned(url, block){
                 append +=`
                                 </div>
                                 <div class="col-6">
-                                    <p>` + board_game.target + `</p>
-                                    <p>` + board_game.ageMin + `</p>
-                                    <p>` + (board_game.nbMinPlayer === board_game.nbMaxPlayer ? board_game.nbMaxPlayer + " joueurs" : "De " + board_game.nbMinPlayer + " à " + board_game.nbMaxPlayer + " joueurs") + `</p>
-                                    <p>` + board_game.gameTime + ` minutes</p>
-                                    <p>` + board_game.price + `€</p>
+                                    <p><i class="fas fa-signal"></i> ` + board_game.target + `</p>
+                                    <p><i class="fas fa-users"></i> ` + (board_game.nbMinPlayer === board_game.nbMaxPlayer ? board_game.nbMaxPlayer + " joueurs" : "De " + board_game.nbMinPlayer + " à " + board_game.nbMaxPlayer + " joueurs") + `</p>
+                                    <p><i class="fas fa-clock"></i> ` + board_game.gameTime + ` minutes</p>
+                                    <p><i class="fas fa-baby"></i> A partir de ` + board_game.ageMin + ` ans</p>
+                                    <p><i class="fas fa-coins"></i> ` + board_game.price + `€</p>
                                 </div>
                             </div>
                         </a>

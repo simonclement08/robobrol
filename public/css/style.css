@@ -51,7 +51,7 @@ a:active {
 
 .board_game {
     margin: 5px;
-    min-height: 300px;
+    min-height: 350px;
     box-shadow: 0 1px 4px rgb(0 0 0 / 10%);
     border: 3px solid #bf0010;
     border-radius: 5px;
@@ -84,13 +84,15 @@ a:active {
     justify-content: center;
 }
 
-#filter {
+#filter,
+#notes {
     margin-top: 18px;
     background-color: #ffffff;
     border-radius: 10px;
 }
 
-#filter_header {
+#filter_header,
+#notes_header {
     padding: 8px;
     text-align: center;
     font-size: 18px;
@@ -105,7 +107,8 @@ a:active {
     justify-content: center;
 }
 
-#filter_body {
+#filter_body,
+#notes_body {
     padding: 10px;
 }
 
@@ -174,4 +177,25 @@ button.active {
     border-radius: 5px;
     padding: 5px;
     margin: 5px;
+}
+
+.note {
+    background-color: #e9e9e9;
+    border-radius: 5px;
+    margin: 5px;
+    padding: 10px;
+    position: relative;
+    font-size: 16px;
+}
+
+.ribbon_note {
+    position: absolute;
+    background-color: #3d3938;
+    right: 0px;
+    top: 0px;
+    filter: drop-shadow(2px 3px 2px rgba(0, 0, 0, 0.5));
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 20% 100%);
+    padding: 5px;
+    padding-left: 20px;
+    color: #ffffff;
 }

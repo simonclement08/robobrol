@@ -3,19 +3,19 @@
 {% block title %}Jeux de société{% endblock %}
 
 {% block body %}
-    <div class="board_game board_game_body">
-        {% if is_granted('ROLE_ADMIN') %}
-            {{ include('board_game/_delete_form.html.twig') }}
-            <a class="float-end" href="{{ path('board_game_edit', {'slug': board_game.slug}) }}"><button class="btn float-end" type="button"><i class="fa-solid fa-xl fa-pen"></i></button></a>
-        {% endif %}
-        <div class="row">
-            <div class="col-sm-12 col-md-12 col-lg-9">
+    <div class="row">
+        <div class="col-sm-12 col-md-12 col-lg-9">
+            <div class="board_game board_game_body">
+                {% if is_granted('ROLE_ADMIN') %}
+                    {{ include('board_game/_delete_form.html.twig') }}
+                    <a class="float-end" href="{{ path('board_game_edit', {'slug': board_game.slug}) }}"><button class="btn float-end" type="button"><i class="fa-solid fa-xl fa-pen"></i></button></a>
+                {% endif %}
                 <div class="row">
                     <div id="board_header{{board_game.id}}" class="col-sm-12 col-md-12 col-lg-5">
                         {% if app.user and board_game.isOwnByUser(app.user) %}
                             <div class="ribbon_wish">
                                 <a class="own" href="{{ path('board_game_own', {'slug': board_game.slug}) }}">
-                                        <div class="content" title="Supprimer de votre collection ?"><i class="fas fa-star"></i></div>
+                                    <div class="content" title="Supprimer de votre collection ?"><i class="fas fa-star"></i></div>
                                 </a>
                             </div>
                         {% elseif app.user %}
@@ -36,7 +36,6 @@
                         {% endif %}
 
                         {% if board_game.images.0 is defined %}
-                        
                             <a href="{{ vich_uploader_asset(board_game.images.0)}}">
                                 <img src="{{ vich_uploader_asset(board_game.images.0)| imagine_filter('show_board_game') }}" alt="{{ board_game.name }}">
                             </a>
@@ -127,7 +126,9 @@
                                         <tr>
                                             <td>Gamme</td>
                                             <td>
-                                               {{ board_game.gamme.name }}
+                                                {% if board_game.gamme is not null %}
+                                                    {{ board_game.gamme.name }}
+                                                {% endif %}
                                             </td>
                                         </tr>
                                     </tbody>
@@ -141,7 +142,60 @@
                                 {% endfor %}
                             </div>
                         </div>
-                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-12 col-lg-3">
+            <div id="notes">
+                <div id="notes_header">
+                    <h4>Notes et avis</h4>
+                </div>
+                <div id="notes_body">
+                    {% if board_game.boardGameWishes|length %}
+                        {% for note in board_game.boardGameNotes %}
+                        <div class="row justify-content-center">
+                            <div class="col-11 note">
+                                <p><strong>{{note.user.username}}</strong></p>
+                                <div class="ribbon_note">{{note.note}} / 20</div>
+                                <cite>{{note.comment}}</cite>
+                                {% if is_granted('NOTE_DELETE', note) %}
+                                    <a class="btn float-end note_delete" href="{{ path('board_game_wish_delete',{ 'id' : note.id }) }}"><i class="fa-solid fa-xl fa-xmark"></i></a>
+                                {% endif %}
+                                {% if is_granted('NOTE_EDIT', note) %}
+                                    <a class="btn float-end note_delete" href="{{ path('board_game_wish_edit',{ 'id' : note.id }) }}"><i class="fa-solid fa-xl fa-pen"></i></a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="row justify-content-center">
+                            <div class="col-11 text-center">
+                                <p>Pas d'avis sur le jeux</p>
+                                <img class="width_80" src="{{ asset('/images/groot.png') }}" />
+                            </div>
+                        </div>
+                    {% endif %}
+                    <div id="note_add">
+                        {% if app.user and not board_game.isNoteByUser(app.user) %}
+                            <div class="row justify-content-center">
+                                <div class="col-11 note">
+                                    <h4>Ajouter une note</h4>
+                                    <input type="hidden" value={{board_game.id}} id="board_game">
+                                    <div class="form-group">
+                                        <label for="note">Note</label>
+                                        <input type="number" step="1" min="0" max="20" class="form-control" id="note" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="comment">Commentaire</label>
+                                        <textarea class="form-control" id="comment" rows="3"></textarea>
+                                    </div>
+                                    <div class="d-flex justify-content-end">
+                                        <button id="add" class="btn btn-success m-1" type="button">Ajouter</button>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -153,6 +207,70 @@
 {% block javascripts %}
 
 <script>
+
+$('#note_add').on("click", "#add", function(e){
+    let data = {}
+    data['board_game'] = $('#board_game').val()
+    data['note'] = $('#note').val()
+    data['comment'] = $('#comment').val()
+    console.log(data);
+
+    $.ajax({
+        data : data,
+        url : "{{ (path('board_game_wish_new')) }}",
+        type : "POST",
+        success : function (response) {
+            if(response.add){
+                var boardGameNote = JSON.parse(response.boardGameNote)
+                $('#note_add').empty()
+                $('#notes_body').append(`
+                    <div class="row justify-content-center">
+                        <div class="col-11 note">
+                            <p><strong>` + boardGameNote.user.username + `</strong></p>
+                            <div class="ribbon_note">` + boardGameNote.note + ` / 20</div>
+                            <cite>` + boardGameNote.comment + `</cite>
+                                <button class="btn float-end note_delete"><i class="fa-solid fa-xl fa-xmark"></i></button>
+                                <button class="btn float-end note_edit" type="button"><i class="fa-solid fa-xl fa-pen"></i></button>
+                        </div>
+                    </div>
+                `)
+                
+            }
+        }
+    })
+});
+
+$('#notes_body').on("click", "[class='note_edit']", function(e){
+    e.preventDefault();
+    const url = this.href;
+    let data = {}
+    data['note'] = $('#note').val()
+    data['comment'] = $('#comment').val()
+    console.log(data);
+
+    $.ajax({
+        url : url,
+        type : "POST",
+        success : function (response) {
+        }
+    })
+});
+
+$('#notes_body').on("click", "[class='note_delete']", function(e){
+    e.preventDefault();
+    const url = this.href;
+    let data = {}
+    data['note'] = $('#note').val()
+    data['comment'] = $('#comment').val()
+    console.log(data);
+
+    $.ajax({
+        url : url,
+        type : "POST",
+        success : function (response) {
+        }
+    })
+});
 
 $('[id*=board_header]').on("click", "[class='wish']", function(e){
     e.preventDefault();

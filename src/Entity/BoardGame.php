@@ -622,4 +622,13 @@ class BoardGame
 
         return false;
     }
+
+    public function isNoteByUser(User $user): bool
+    {
+        foreach ($this->boardGameNotes as $note) {
+            if ($note->getUser() === $user) return true;
+        }
+
+        return false;
+    }
 }
