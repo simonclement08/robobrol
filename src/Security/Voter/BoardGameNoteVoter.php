@@ -21,7 +21,7 @@ class BoardGameNoteVoter extends Voter
     {
         // replace with your own logic
         // https://symfony.com/doc/current/security/voters.html
-        return in_array($attribute, ['NOTE_EDIT', 'NOTE_DELETE'])
+        return in_array($attribute, ['NOTE_DELETE'])
             && $subject instanceof \App\Entity\BoardGameNote;
     }
 
@@ -38,17 +38,10 @@ class BoardGameNoteVoter extends Voter
 
         // ... (check conditions and return true to grant permission) ...
         switch ($attribute) {
-            case 'NOTE_EDIT':
-                return $this->canEdit($boardGameNote, $user);
             case 'NOTE_DELETE':
                 return $this->canDelete($boardGameNote, $user);
         }
         throw new \LogicException('This code should not be reached!');
-    }
-
-    private function canEdit(BoardGameNote $boardGameNote, User $user): bool
-    {
-        return $boardGameNote->getUser() === $user;
     }
 
     private function canDelete(BoardGameNote $boardGameNote, User $user): bool

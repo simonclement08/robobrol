@@ -50,26 +50,8 @@ class BoardGameNoteController extends AbstractController
                 'json',
                 ['groups' => 'note']
             ),
-        ], 200);
-    }
-
-    /**
-     * @Route("/board_game/note/{id}/edit", name="board_game_wish_edit", methods={"POST"})
-     * @IsGranted("NOTE_EDIT", subject="boardGameNote")
-     */
-    public function note_edit(Request $request, BoardGameNote $boardGameNote, BoardGameNoteRepository $boardGameNoteRepository, SerializerInterface $serializer): Response
-    {
-        $data = $request->request->all();
-
-        $boardGameNote->setNote($data["note"]);
-        $boardGameNote->setComment($data["comment"]);
-        $boardGameNoteRepository->add($boardGameNote);
-        return $this->json([
-            'edit' => true,
-            'boardGameNote' => $serializer->serialize(
-                $boardGameNote,
-                'json',
-                ['groups' => 'note']
+            'board_note' => $boardGameNoteRepository->count(
+                ['boardGame' => $boardGame]
             ),
         ], 200);
     }
@@ -80,13 +62,13 @@ class BoardGameNoteController extends AbstractController
      */
     public function note_delete(BoardGameNote $boardGameNote, BoardGameNoteRepository $boardGameNoteRepository): Response
     {
-        if ($boardGameNoteRepository->remove($boardGameNote)) {
-            return $this->json([
-                'delete' => true,
-            ], 200);
-        }
+        $boardGame = $boardGameNote->getBoardGame();
+        $boardGameNoteRepository->remove($boardGameNote);
         return $this->json([
-            'delete' => false,
+            'delete' => true,
+            'board_note' => $boardGameNoteRepository->count(
+                ['boardGame' => $boardGame]
+            ),
         ], 200);
     }
 }
